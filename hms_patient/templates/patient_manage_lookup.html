@@ -1,0 +1,54 @@
+{% extends "patientHome.html" %}
+{% block content %}
+
+<style>
+.page-wrap{ padding:40px; }
+.card{
+  max-width:520px; margin:0 auto;
+  background:#fff; border-radius:18px;
+  padding:28px; box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+.card h2{ font-size:20px; margin-bottom:8px; color:#111827; }
+.card p{ font-size:13px; color:#6b7280; margin-bottom:18px; }
+.field{ margin-bottom:14px; }
+label{ display:block; font-size:13px; color:#374151; margin-bottom:6px; }
+input{
+  width:100%; padding:12px 14px; border-radius:12px;
+  border:1px solid #e5e7eb; outline:none;
+}
+input:focus{ border-color:#4c79ff; box-shadow:0 0 0 4px rgba(76,121,255,0.12); }
+.btn{
+  width:100%; padding:12px 16px; border:none; border-radius:12px;
+  background:linear-gradient(135deg,#4c79ff,#3b5bdb);
+  color:#fff; font-weight:700; cursor:pointer;
+}
+.hint{ font-size:12px; color:#6b7280; margin-top:10px; }
+</style>
+
+<div class="content">
+  <div class="page-wrap">
+    <div class="card">
+      <h2>Manage My Appointment</h2>
+      <p>Enter your phone + appointment date. We’ll send an OTP to confirm it’s you.</p>
+
+      <form method="POST" action="{% url 'patient_send_otp' %}">
+        {% csrf_token %}
+
+        <div class="field">
+          <label>Phone Number</label>
+          <input type="text" name="phone" placeholder="e.g. 9876543210" required>
+        </div>
+
+        <div class="field">
+          <label>Appointment Date</label>
+          <input type="date" name="date" required>
+        </div>
+
+        <button class="btn" type="submit">Send OTP</button>
+        <div class="hint">OTP valid for 5 minutes.</div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

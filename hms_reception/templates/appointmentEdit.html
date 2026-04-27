@@ -1,0 +1,176 @@
+{% extends 'receptionHome.html' %}
+{% block content %}
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #eef4ff, #f8fbff);
+}
+
+.form-card {
+    max-width: 600px;
+    margin: 60px auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(31, 78, 121, 0.08);
+    transition: 0.3s ease;
+}
+
+.form-card:hover { transform: translateY(-4px); }
+
+.form-title { text-align: center; margin-bottom: 30px; }
+.form-title h3 { font-size: 22px; font-weight: 600; color: #1f4e79; }
+
+.form-group { display: flex; flex-direction: column; margin-bottom: 20px; }
+.form-group label { font-size: 14px; font-weight: 500; color: #334e68; margin-bottom: 6px; }
+
+.form-group input,
+.form-group select {
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid #d9e2ec;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    background: #f9fbff;
+    transition: 0.25s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #4e73df;
+    background: #ffffff;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(78, 115, 223, 0.12);
+}
+
+.form-group input:disabled { background: #eef2f7; cursor: not-allowed; }
+
+.field-error { color: #ef4444; font-size: 12px; margin-top: 4px; display: none; }
+
+.form-actions { margin-top: 30px; display: flex; gap: 15px; }
+
+.action-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.action-btn.edit {
+    background: linear-gradient(135deg, #4e73df, #224abe);
+    color: white;
+}
+
+.action-btn.edit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(78, 115, 223, 0.25);
+}
+
+.action-btn.delete {
+    background: linear-gradient(135deg, #ff6b6b, #d90429);
+    color: white;
+}
+
+.action-btn.delete:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(217, 4, 41, 0.25);
+}
+</style>
+
+<div class="form-card">
+    <div class="form-title">
+        <h3>Edit Appointment</h3>
+    </div>
+
+    <form method="POST" id="appointmentEditForm" novalidate>
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Token</label>
+            <input type="text" value="{{ appointment.Token_number }}" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="patient_name">Patient</label>
+            <select name="patient_name" id="patient_name" required>
+                <option value="">-- Select Patient --</option>
+                {% for patient in patients %}
+                    <option value="{{ patient.id }}"
+                        {% if patient.id == appointment.PatientData.id %}selected{% endif %}>
+                        {{ patient.Patient_name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="field-error" id="err_patient">Please select a patient.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="doctor_name">Doctor</label>
+            <select name="doctor_name" id="doctor_name" required>
+                <option value="">-- Select Doctor --</option>
+                {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}"
+                        {% if doctor.id == appointment.DoctorData.id %}selected{% endif %}>
+                        {{ doctor.Doctor_name }}
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="field-error" id="err_doctor">Please select a doctor.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date" value="{{ appointment.Date|date:'Y-m-d' }}" required>
+            <div class="field-error" id="err_date">Please select a valid future date.</div>
+        </div>
+
+        <div class="form-group">
+            <label>Status</label>
+            <input type="text" value="{{ appointment.Prescription_status }}" disabled>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-btn edit">Save Changes</button>
+            <form method="post" action="{% url 'appointmentCancel' appointment.id %}">
+                {% csrf_token %}
+                <button type="submit" class="action-btn delete">Cancel Appointment</button>
+            </form>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Set today as the minimum selectable date
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').setAttribute('min', today);
+
+    document.getElementById('appointmentEditForm').addEventListener('submit', function (e) {
+        let valid = true;
+
+        const patient = document.getElementById('patient_name');
+        const doctor = document.getElementById('doctor_name');
+        const date = document.getElementById('date');
+
+        if (!patient.value) {
+            document.getElementById('err_patient').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_patient').style.display = 'none'; }
+
+        if (!doctor.value) {
+            document.getElementById('err_doctor').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_doctor').style.display = 'none'; }
+
+        if (!date.value || date.value < today) {
+            document.getElementById('err_date').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_date').style.display = 'none'; }
+
+        if (!valid) e.preventDefault();
+    });
+</script>
+
+{% endblock %}

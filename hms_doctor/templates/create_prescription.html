@@ -1,0 +1,615 @@
+{% extends "doctorHome.html" %}
+{% block content %}
+
+<style>
+    /* =========================
+   Digital Prescription Page
+   Full Updated CSS
+   ========================= */
+
+/* Layout */
+.page-wrapper {
+    width: 95%;
+    max-width: 950px;
+    margin: 30px auto;
+}
+
+/* Card */
+.form-card {
+    background: #ffffff;
+    padding: 35px 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+}
+
+.form-card h3 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-weight: 700;
+    color: #102a43;
+}
+
+/* ===== Info Strip ===== */
+.prescription-info{
+    background: #f4f8ff;
+    border: 1px solid #dbe8ff;
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.info-block label{
+    font-size: 12px;
+    font-weight: 600;
+    color:#52616b;
+    display:block;
+    margin-bottom: 6px;
+}
+
+.info-value{
+    font-size: 14px;
+    font-weight: 700;
+    color:#102a43;
+}
+
+/* ===== Center Actions (History + Assign) ===== */
+.top-actions{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    margin:22px auto 24px;
+    width:100%;
+    flex-wrap:wrap;
+}
+
+/* Shared button style (History + Assign) */
+.btn-action{
+    width:200px;
+    height:48px;
+    padding:0 18px;
+    border-radius:16px;
+    font-weight:700;
+    font-size:15px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    text-decoration:none;
+    border:none;
+    cursor:pointer;
+    transition:all 0.25s ease;
+}
+
+/* Patient History */
+.btn-history{
+    background: linear-gradient(135deg,#111827,#374151);
+    color:#fff;
+    box-shadow:0 12px 24px rgba(0,0,0,0.18);
+}
+.btn-history:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 30px rgba(0,0,0,0.25);
+}
+
+/* Assign Test */
+.btn-assign-test{
+    background: linear-gradient(135deg,#3b82f6,#2563eb);
+    color:#fff;
+    box-shadow:0 12px 24px rgba(37,99,235,0.25);
+}
+.btn-assign-test:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 30px rgba(37,99,235,0.35);
+}
+
+/* ===== Form Grid ===== */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 18px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #d9e2ec;
+    background: #f9fbfd;
+    font-size: 14px;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+    color:#243b53;
+}
+
+hr{
+    border:none;
+    border-top:1px solid #edf2f7;
+    margin: 18px 0;
+}
+
+/* ===== Rx Box ===== */
+.rx-box{
+    background:#ffffff;
+    border:1px solid #edf2f7;
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 8px 22px rgba(0,0,0,0.04);
+}
+
+.rx-head{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    margin-bottom: 12px;
+}
+
+.rx-title{
+    font-weight: 700;
+    color:#102a43;
+}
+
+.medicine-row {
+    display: grid;
+    grid-template-columns: 40px 2.5fr 1fr 1fr 1fr 2fr 40px;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: center;
+}
+
+.rx-num{
+    height: 38px;
+    border-radius: 8px;
+    background:#f1f6ff;
+    border: 1px solid #dbe8ff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight: 700;
+    color:#274060;
+}
+
+/* ===== Live Search ===== */
+.medicine-search {
+    position: relative;
+}
+
+.medicine-dropdown {
+    display: none;
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    max-height: 180px;
+    overflow-y: auto;
+    z-index: 999;
+    border:1px solid #edf2f7;
+    margin-top: 6px;
+}
+
+.medicine-option {
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+.medicine-option:hover {
+    background: #f1f5f9;
+}
+
+/* Buttons */
+.btn-remove{
+    border:none;
+    background:#fff;
+    border-radius:8px;
+    cursor:pointer;
+    color:#e11d48;
+    font-weight:700;
+}
+
+/* Add Medicine */
+.btn-add {
+    background: #2c7be5;
+    color: #fff;
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    font-weight: 600;
+}
+
+/* Save Prescription */
+.btn-save {
+    width:200px;
+    height:48px;
+    margin:25px auto 0;
+    display:block;
+    background: linear-gradient(135deg, #28c76f, #20a95a);
+    color: #fff;
+    padding: 0 18px;
+    border-radius: 16px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:all 0.25s ease;
+}
+
+.btn-save:hover{
+    transform:translateY(-3px);
+    box-shadow:0 14px 30px rgba(40, 199, 111, 0.25);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 600px){
+    .prescription-info{
+        grid-template-columns: 1fr;
+    }
+    .form-row{
+        grid-template-columns: 1fr;
+    }
+    .top-actions{
+        flex-direction:column;
+    }
+    .btn-action,
+    .btn-save{
+        width:100%;
+        max-width:320px;
+    }
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+<div class="page-wrapper">
+
+<div class="form-card">
+<h3>Digital Prescription</h3>
+
+<!-- ===== Info Strip ===== -->
+<div class="prescription-info">
+
+    <div class="info-block">
+        <label>Patient</label>
+        <div class="info-value">
+            {{ appointment.PatientData.Patient_name }}
+        </div>
+    </div>
+
+    <div class="info-block">
+        <label>Age / Gender</label>
+        <div class="info-value">
+            {{ appointment.PatientData.Patient_age }} /
+            {{ appointment.PatientData.Patient_gender }}
+        </div>
+    </div>
+
+    <div class="info-block">
+        <label>Doctor</label>
+        <div class="info-value">
+            {{ appointment.DoctorData.Doctor_name }}
+        </div>
+    </div>
+
+    <div class="info-block">
+        <label>Appointment Date</label>
+        <div class="info-value">
+            {{ appointment.Date }}
+        </div>
+    </div>
+
+    <div class="info-block">
+        <label>Token No</label>
+        <div class="info-value">
+            {{ appointment.Token_number }}
+        </div>
+    </div>
+
+</div>
+{% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+<div class="top-actions">
+
+    <button type="button"
+            class="btn-action btn-history"
+            onclick="openHistory()">
+        📜 Patient History
+    </button>
+
+    <a href="{% url 'addTest' appointment.id %}"
+       class="btn-action btn-assign-test">
+        🧪 Assign Test
+    </a>
+
+</div>
+
+<form method="post" id="prescriptionForm" novalidate>
+{% csrf_token %}
+
+<label>Diagnosis</label>
+<textarea name="diagnosis" id="diagnosis"></textarea>
+<div style="color:#ef4444;font-size:12px;margin-top:4px;display:none" id="err_diagnosis">
+    Diagnosis is required.
+</div>
+
+<div class="form-row" style="margin-top:18px;">
+    <div>
+        <label>Treatment Duration (days)</label>
+        <input type="number" name="duration" id="duration" min="1" placeholder="Enter number of days">
+        <div style="color:#ef4444;font-size:12px;margin-top:4px;display:none" id="err_duration">
+            Duration must be a valid number (min 1 day).
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<div class="rx-box">
+
+<div class="rx-head">
+    <div class="rx-title">℞ Medicines</div>
+</div>
+
+<div id="medicine-container">
+
+<div class="medicine-row">
+    <div class="rx-num">1</div>
+
+    <div class="medicine-search">
+        <input type="text" placeholder="Search medicine..."
+               onkeyup="filterMedicines(this)"
+               autocomplete="off">
+
+        <input type="hidden" name="medicine[]" class="medicine-id">
+
+        <div class="medicine-dropdown">
+            {% for med in medicines_master %}
+            <div class="medicine-option"
+                 data-id="{{ med.id }}"
+                 onclick="selectMedicine(this)">
+                {{ med.Medicine_name }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <select name="morning[]">
+        <option value="0">M ❌</option>
+        <option value="1">M ✔</option>
+    </select>
+
+    <select name="afternoon[]">
+        <option value="0">A ❌</option>
+        <option value="1">A ✔</option>
+    </select>
+
+    <select name="night[]">
+        <option value="0">N ❌</option>
+        <option value="1">N ✔</option>
+    </select>
+
+    <select name="instructions[]">
+        <option value="">---</option>
+        <option value="After Food">After Food</option>
+        <option value="Before Food">Before Food</option>
+    </select>
+
+    <button type="button" class="btn-remove" onclick="removeRow(this)">✕</button>
+</div>
+
+</div>
+
+<button type="button" class="btn-add" onclick="addMedicine()">💊 Add Medicine</button>
+
+</div>
+
+<label style="margin-top:20px;">Additional Notes</label>
+<textarea name="notes"></textarea>
+
+<div style="color:#ef4444;font-size:13px;text-align:center;margin-top:12px;display:none" id="err_medicine">
+    Please add at least one medicine and select it from the list.
+</div>
+
+<button type="submit" class="btn-save">💾 Save Prescription</button>
+
+</form>
+</div>
+
+<div id="historyModal"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:9999; padding:40px 12px;">
+
+    <div style="max-width:900px; margin:0 auto; background:#fff; border-radius:14px; padding:20px; position:relative;">
+
+        <button type="button"
+                onclick="closeHistory()"
+                style="position:absolute; top:12px; right:15px; border:none; background:#fff; font-size:20px; cursor:pointer;">
+            ✕
+        </button>
+
+        <div id="historyContent">
+            Loading...
+        </div>
+
+    </div>
+</div>
+</div>
+
+<script>
+function filterMedicines(input) {
+    const dropdown = input.parentElement.querySelector(".medicine-dropdown");
+    const value = input.value.toLowerCase();
+    dropdown.style.display = "block";
+
+    dropdown.querySelectorAll(".medicine-option").forEach(opt => {
+        opt.style.display =
+            opt.textContent.toLowerCase().includes(value) ? "block" : "none";
+    });
+}
+
+function selectMedicine(option) {
+    const parent = option.closest(".medicine-search");
+    parent.querySelector("input[type=text]").value = option.textContent.trim();
+    parent.querySelector(".medicine-id").value = option.dataset.id;
+    parent.querySelector(".medicine-dropdown").style.display = "none";
+}
+
+function renumberRows(){
+    document.querySelectorAll("#medicine-container .rx-num")
+        .forEach((n, idx) => n.textContent = idx + 1);
+}
+
+function removeRow(btn){
+    const row = btn.closest(".medicine-row");
+    if (document.querySelectorAll(".medicine-row").length > 1) {
+        row.remove();
+        renumberRows();
+    }
+}
+
+function addMedicine() {
+    const container = document.getElementById("medicine-container");
+    const row = document.querySelector(".medicine-row").cloneNode(true);
+
+    row.querySelector("input[type=text]").value = "";
+    row.querySelector(".medicine-id").value = "";
+    row.querySelectorAll("select").forEach(s => s.selectedIndex = 0);
+
+    container.appendChild(row);
+    renumberRows();
+}
+
+document.addEventListener("click", e => {
+    document.querySelectorAll(".medicine-search").forEach(box => {
+        if (!box.contains(e.target)) {
+            box.querySelector(".medicine-dropdown").style.display = "none";
+        }
+    });
+});
+
+async function openHistory(){
+    const modal = document.getElementById("historyModal");
+    const content = document.getElementById("historyContent");
+
+    modal.style.display = "block";
+    content.innerHTML = "Loading...";
+
+    try{
+        const url = "{% url 'patient_history' appointment.id %}";
+        const response = await fetch(url);
+        const html = await response.text();
+        content.innerHTML = html;
+    }
+    catch(err){
+        content.innerHTML = "<div style='color:red;font-weight:700;'>Failed to load history.</div>";
+    }
+}
+
+function closeHistory(){
+    document.getElementById("historyModal").style.display = "none";
+}
+
+document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") closeHistory();
+});
+
+document.getElementById("historyModal").addEventListener("click", function(e){
+    if(e.target.id === "historyModal") closeHistory();
+});
+
+// ===== VALIDATION =====
+document.getElementById("prescriptionForm").addEventListener("submit", function(e) {
+    let valid = true;
+
+    // Diagnosis
+    const diagnosis = document.getElementById("diagnosis");
+    const errDiagnosis = document.getElementById("err_diagnosis");
+    if (!diagnosis.value.trim()) {
+        errDiagnosis.style.display = "block";
+        valid = false;
+    } else {
+        errDiagnosis.style.display = "none";
+    }
+
+    // Duration
+    const duration = document.getElementById("duration");
+    const errDuration = document.getElementById("err_duration");
+    const durationVal = parseInt(duration.value);
+    if (!duration.value || isNaN(durationVal) || durationVal < 1) {
+        errDuration.style.display = "block";
+        valid = false;
+    } else {
+        errDuration.style.display = "none";
+    }
+
+    // Medicines — at least one must be selected from dropdown
+    const medicineIds = document.querySelectorAll(".medicine-id");
+    const errMedicine = document.getElementById("err_medicine");
+    let hasValidMedicine = false;
+
+    medicineIds.forEach(input => {
+        if (input.value.trim() !== "") hasValidMedicine = true;
+    });
+
+    if (!hasValidMedicine) {
+        errMedicine.style.display = "block";
+        valid = false;
+    } else {
+        errMedicine.style.display = "none";
+    }
+
+    if (!valid) e.preventDefault();
+});
+
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+
+{% endblock %}

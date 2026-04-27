@@ -1,0 +1,198 @@
+{% extends "patientBooking.html" %}  {# change this to your patient base, if different #}
+{% block content %}
+
+<style>
+  .page-wrap{
+    width:95%;
+    max-width:820px;
+    margin:30px auto;
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  }
+
+  .hero{
+    background:linear-gradient(135deg,#5b7cff,#7c5cff);
+    padding:18px 22px;
+    border-radius:18px;
+    color:#fff;
+    font-weight:800;
+    font-size:18px;
+    box-shadow:0 10px 25px rgba(99,102,241,.25);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:16px;
+  }
+  .hero small{display:block;font-weight:500;opacity:.9;font-size:12px}
+
+  .card{
+    background:#fff;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+  }
+
+  .info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .info{
+    background:#f4f8ff;
+    border:1px solid #e6edff;
+    border-radius:14px;
+    padding:12px;
+    font-size:14px;
+    color:#102a43;
+  }
+  .info b{display:block;font-size:12px;color:#5a6b85;font-weight:700;margin-bottom:2px}
+
+  .form-row{
+    display:grid;
+    grid-template-columns: 1fr auto;
+    gap:12px;
+    align-items:end;
+    margin-top:10px;
+  }
+
+  label{font-size:13px;font-weight:700;color:#102a43;margin-bottom:6px;display:block}
+  input[type="date"]{
+    width:100%;
+    padding:12px 12px;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    outline:none;
+    font-size:14px;
+    background:#fff;
+  }
+  input[type="date"]:focus{
+    border-color:#7c5cff;
+    box-shadow:0 0 0 4px rgba(124,92,255,.15);
+  }
+
+  .btn{
+    padding:12px 16px;
+    border:none;
+    border-radius:14px;
+    font-weight:800;
+    cursor:pointer;
+    transition:.15s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,#5b7cff,#7c5cff);
+    color:#fff;
+    box-shadow:0 10px 25px rgba(99,102,241,.25);
+  }
+  .btn-primary:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    box-shadow:none;
+  }
+  .btn-ghost{
+    background:#f3f4f6;
+    color:#111827;
+  }
+
+  .hint{
+    margin-top:10px;
+    font-size:13px;
+    color:#64748b;
+    background:#f8fafc;
+    border:1px solid #eef2f7;
+    border-radius:14px;
+    padding:10px 12px;
+  }
+  .badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    background:#eef2ff;
+    color:#3730a3;
+    font-weight:800;
+    font-size:12px;
+  }
+</style>
+
+<div class="page-wrap">
+
+  <div class="hero">
+    <div>
+      Reschedule Appointment
+      <small>Pick a new date — token & time will be recalculated automatically ✅</small>
+    </div>
+    <span class="badge">OTP Verified</span>
+  </div>
+
+  <div class="card">
+    <div class="info-grid">
+      <div class="info">
+        <b>Patient</b>
+        {{ appointment.PatientData.Patient_name }} ({{ appointment.PatientData.Patient_phone }})
+      </div>
+      <div class="info">
+        <b>Doctor</b>
+        Dr. {{ appointment.DoctorData.Doctor_name }} — {{ appointment.DoctorData.Doctor_department }}
+      </div>
+      <div class="info">
+        <b>Current Date</b>
+        {{ appointment.Date }}
+      </div>
+      <div class="info">
+        <b>Current Token / Time</b>
+        Token {{ appointment.Token_number }} — {{ appointment.Appointment_time }}
+      </div>
+    </div>
+
+    <form method="POST" id="resForm">
+      {% csrf_token %}
+
+      <div class="form-row">
+        <div>
+          <label>New Date</label>
+          {# IMPORTANT: name="date" must match request.POST.get("date") in your view #}
+          <input
+            type="date"
+            name="date"
+            id="newDate"
+            min="{% now 'Y-m-d' %}"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+          Update
+        </button>
+      </div>
+
+      <div class="hint" id="previewHint">
+        Select a date to enable the update button.
+      </div>
+
+      <div style="display:flex; gap:10px; margin-top:14px;">
+        <a class="btn btn-ghost" href="{% url 'patient_manage_lookup' %}">Back</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  const dateEl = document.getElementById("newDate");
+  const btn = document.getElementById("submitBtn");
+  const hint = document.getElementById("previewHint");
+
+  dateEl.addEventListener("change", () => {
+    if (dateEl.value) {
+      btn.disabled = false;
+      hint.textContent = `New date selected: ${dateEl.value}. Click Update to confirm.`;
+    } else {
+      btn.disabled = true;
+      hint.textContent = "Select a date to enable the update button.";
+    }
+  });
+</script>
+
+{% endblock %}

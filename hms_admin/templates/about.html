@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | Digital HMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body { background:#ffffff; color:#1e293b; }
+.navbar { display:flex; justify-content:space-between; align-items:center; padding:22px 45px; background:#f9fafc; border-bottom:1px solid #e5e7eb; }
+.logo { display:flex; align-items:center; gap:12px; font-weight:600; font-size:18px; color:#2f5db3; text-decoration:none; }
+.logo-circle { width:38px; height:38px; border-radius:50%; background:#e7efff; display:flex; align-items:center; justify-content:center; }
+.nav-links { display:flex; gap:30px; align-items:center; }
+.nav-links a { text-decoration:none; color:#6b7280; font-size:15px; font-weight:500; transition:.2s; }
+.nav-links a:hover { color:#2f5db3; }
+.nav-links a.active { color:#2f5db3; border-bottom:2px solid #2f5db3; padding-bottom:4px; }
+.btn-primary { background:linear-gradient(135deg,#4c79ff,#3b5bdb); color:#fff; padding:10px 22px; border-radius:10px; font-size:14px; font-weight:600; text-decoration:none; transition:.25s; }
+.btn-primary:hover { opacity:.9; transform:translateY(-1px); }
+.hero { background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 60%,#2563eb 100%); padding:72px 45px 80px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; width:420px; height:420px; border-radius:50%; background:rgba(255,255,255,.05); top:-120px; right:-80px; }
+.hero::after { content:''; position:absolute; width:240px; height:240px; border-radius:50%; background:rgba(255,255,255,.04); bottom:-60px; left:8%; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:2; }
+.hero-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:#bfdbfe; font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; border-radius:999px; margin-bottom:22px; }
+.hero h1 { font-size:clamp(28px,4.5vw,50px); color:#fff; font-weight:700; line-height:1.2; margin-bottom:18px; max-width:680px; }
+.hero h1 span { color:#93c5fd; }
+.hero p { font-size:16px; line-height:1.8; color:#bfdbfe; max-width:600px; }
+.hero-stats { display:flex; gap:40px; margin-top:44px; padding-top:36px; border-top:1px solid rgba(255,255,255,.12); flex-wrap:wrap; }
+.stat-num { font-size:30px; font-weight:700; color:#fff; }
+.stat-label { font-size:13px; color:#93c5fd; margin-top:3px; }
+.container { max-width:1100px; margin:0 auto; padding:60px 45px; }
+.section-eyebrow { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#3b5bdb; margin-bottom:8px; }
+.section-heading { font-size:26px; font-weight:700; color:#111827; margin-bottom:30px; }
+.two-col { display:grid; grid-template-columns:1.1fr .9fr; gap:24px; margin-bottom:56px; }
+.card { background:#fff; border-radius:16px; padding:32px; border:1px solid #e5e7eb; box-shadow:0 4px 20px rgba(0,0,0,.05); }
+.card h3 { font-size:17px; font-weight:700; color:#111827; margin-bottom:14px; }
+.card p { font-size:14px; line-height:1.9; color:#6b7280; margin-bottom:12px; }
+.card p:last-child { margin-bottom:0; }
+.tech-list { display:flex; flex-direction:column; gap:10px; }
+.tech-row { display:flex; justify-content:space-between; align-items:center; padding:11px 14px; background:#f9fafc; border-radius:10px; border:1px solid #e5e7eb; }
+.tech-key { font-size:13px; color:#6b7280; font-weight:500; }
+.tech-val { font-size:13px; font-weight:600; color:#2f5db3; }
+.features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-bottom:56px; }
+.feat-card { background:#fff; border-radius:14px; padding:22px 20px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(0,0,0,.04); transition:.25s ease; }
+.feat-card:hover { transform:translateY(-4px); box-shadow:0 10px 30px rgba(59,91,219,.12); border-color:#bfdbfe; }
+.feat-icon { width:46px; height:46px; border-radius:12px; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:20px; margin-bottom:14px; }
+.feat-card h4 { font-size:14px; font-weight:700; color:#111827; margin-bottom:8px; }
+.feat-card p { font-size:13px; line-height:1.7; color:#6b7280; }
+.footer-strip { background:#f0f4ff; border:1px solid #c7d7fc; border-radius:14px; padding:28px 32px; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.footer-strip p { font-size:14px; color:#4b5563; line-height:1.7; max-width:580px; }
+.page-footer { background:#f9fafc; border-top:1px solid #e5e7eb; padding:22px 45px; text-align:center; margin-top:60px; }
+.page-footer p { font-size:13px; color:#9ca3af; }
+@media(max-width:900px) { .two-col { grid-template-columns:1fr; } .navbar { padding:18px 24px; } .hero { padding:52px 24px 60px; } .container { padding:44px 24px; } }
+@media(max-width:600px) { .nav-links { display:none; } .hero-stats { gap:24px; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/" class="logo"><div class="logo-circle">🏥</div>Digital HMS</a>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/about/" class="active">About</a>
+        <a href="/services/">Services</a>
+        <a href="/contact/">Contact</a>
+    </div>
+    <a href="/" class="btn-primary">← Back to Home</a>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-tag">🏥 Hospital Workflow Platform</div>
+        <h1>About Our <span>Digital Hospital</span> Management System</h1>
+        <p>A centralized web platform that connects all hospital departments — from reception to billing — into one seamless digital workflow.</p>
+        <div class="hero-stats">
+            <div><div class="stat-num">7</div><div class="stat-label">Modules</div></div>
+            <div><div class="stat-num">6</div><div class="stat-label">User Roles</div></div>
+            <div><div class="stat-num">100%</div><div class="stat-label">Paperless</div></div>
+            <div><div class="stat-num">1</div><div class="stat-label">Unified Platform</div></div>
+        </div>
+    </div>
+</section>
+
+<div class="container">
+    <div class="two-col">
+        <div class="card">
+            <h3>System Overview</h3>
+            <p>This system replaces traditional paper-based hospital management with a more organized and efficient digital solution. Staff can manage patient details, appointments, prescriptions, laboratory reports, medicines, and bills all from one place.</p>
+            <p>The system improves communication between departments and reduces common issues such as record loss, handwriting errors, billing mistakes, and delays in patient service.</p>
+            <p>Role-based access ensures each user sees only what is relevant to their department, keeping data secure and operations streamlined.</p>
+        </div>
+        <div class="card">
+            <h3>Technology Stack</h3>
+            <div class="tech-list">
+                <div class="tech-row"><span class="tech-key">Frontend</span><span class="tech-val">HTML · CSS · JavaScript</span></div>
+                <div class="tech-row"><span class="tech-key">Backend</span><span class="tech-val">Python Django</span></div>
+                <div class="tech-row"><span class="tech-key">Database</span><span class="tech-val"> MySQL</span></div>
+                <div class="tech-row"><span class="tech-key">Architecture</span><span class="tech-val">Modular Role-Based</span></div>
+                <div class="tech-row"><span class="tech-key">Deployment</span><span class="tech-val">Local Server</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-eyebrow">Core Capabilities</div>
+    <div class="section-heading">Main Features</div>
+
+    <div class="features-grid">
+        <div class="feat-card"><div class="feat-icon">👤</div><h4>Patient Management</h4><p>Store and retrieve patient records digitally with accurate, organized data.</p></div>
+        <div class="feat-card"><div class="feat-icon">📅</div><h4>Appointment Scheduling</h4><p>Book, reschedule, and cancel appointments with automatic token generation.</p></div>
+        <div class="feat-card"><div class="feat-icon">🩺</div><h4>Doctor Module</h4><p>Doctors view schedules, patient history, and create digital prescriptions.</p></div>
+        <div class="feat-card"><div class="feat-icon">🧪</div><h4>Laboratory Module</h4><p>Manage test assignments, upload reports, and track statuses in real time.</p></div>
+        <div class="feat-card"><div class="feat-icon">💊</div><h4>Pharmacy Management</h4><p>Handle medicine inventory, prescription fulfillment, and stock tracking.</p></div>
+        <div class="feat-card"><div class="feat-icon">🧾</div><h4>Billing System</h4><p>Auto-generate bills combining doctor fees, test charges, and medicines.</p></div>
+        <div class="feat-card"><div class="feat-icon">🔐</div><h4>Role-Based Access</h4><p>Separate secure portals for admin, doctor, reception, lab, pharmacy, billing.</p></div>
+        <div class="feat-card"><div class="feat-icon">📱</div><h4>OTP Verification</h4><p>Patients manage appointments securely via OTP — no login account needed.</p></div>
+    </div>
+
+    <div class="footer-strip">
+        <p>This system is designed to improve hospital workflow, reduce waiting time, and provide a smooth digital experience for both staff and patients.</p>
+        <a href="/" class="btn-primary">Go to Home →</a>
+    </div>
+</div>
+
+<footer class="page-footer">
+    <p>© Digital Hospital Management System · All rights reserved</p>
+</footer>
+
+</body>
+</html>

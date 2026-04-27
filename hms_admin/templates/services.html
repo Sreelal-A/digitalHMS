@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Services | Digital HMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Inter',sans-serif; }
+body { background:#ffffff; color:#1e293b; }
+.navbar { display:flex; justify-content:space-between; align-items:center; padding:22px 45px; background:#f9fafc; border-bottom:1px solid #e5e7eb; }
+.logo { display:flex; align-items:center; gap:12px; font-weight:600; font-size:18px; color:#2f5db3; text-decoration:none; }
+.logo-circle { width:38px; height:38px; border-radius:50%; background:#e7efff; display:flex; align-items:center; justify-content:center; }
+.nav-links { display:flex; gap:30px; align-items:center; }
+.nav-links a { text-decoration:none; color:#6b7280; font-size:15px; font-weight:500; transition:.2s; }
+.nav-links a:hover { color:#2f5db3; }
+.nav-links a.active { color:#2f5db3; border-bottom:2px solid #2f5db3; padding-bottom:4px; }
+.btn-primary { background:linear-gradient(135deg,#4c79ff,#3b5bdb); color:#fff; padding:10px 22px; border-radius:10px; font-size:14px; font-weight:600; text-decoration:none; transition:.25s; }
+.btn-primary:hover { opacity:.9; transform:translateY(-1px); }
+
+.hero { background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 60%,#2563eb 100%); padding:72px 45px 80px; position:relative; overflow:hidden; }
+.hero::before { content:''; position:absolute; width:420px; height:420px; border-radius:50%; background:rgba(255,255,255,.05); top:-120px; right:-80px; }
+.hero::after { content:''; position:absolute; width:240px; height:240px; border-radius:50%; background:rgba(255,255,255,.04); bottom:-60px; left:8%; }
+.hero-inner { max-width:1100px; margin:0 auto; position:relative; z-index:2; }
+.hero-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.2); color:#bfdbfe; font-size:12px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; padding:6px 14px; border-radius:999px; margin-bottom:22px; }
+.hero h1 { font-size:clamp(28px,4.5vw,50px); color:#fff; font-weight:700; line-height:1.2; margin-bottom:18px; max-width:680px; }
+.hero h1 span { color:#93c5fd; }
+.hero p { font-size:16px; line-height:1.8; color:#bfdbfe; max-width:600px; }
+
+.container { max-width:1100px; margin:0 auto; padding:60px 45px; }
+.section-eyebrow { font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#3b5bdb; margin-bottom:8px; }
+.section-heading { font-size:26px; font-weight:700; color:#111827; margin-bottom:30px; }
+
+/* services grid - 3 cols with accent left border */
+.services-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; margin-bottom:48px; }
+.svc-card { background:#fff; border-radius:14px; padding:24px 22px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(0,0,0,.04); transition:.25s ease; border-left:4px solid #3b5bdb; }
+.svc-card:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(59,91,219,.10); }
+.svc-card:nth-child(3n+2) { border-left-color:#2563eb; }
+.svc-card:nth-child(3n+3) { border-left-color:#60a5fa; }
+.svc-header { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+.svc-icon { width:44px; height:44px; border-radius:10px; background:#eff6ff; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.svc-card h3 { font-size:15px; font-weight:700; color:#111827; }
+.svc-card p { font-size:13px; line-height:1.8; color:#6b7280; }
+
+/* highlight box */
+.highlight { background:#f0f4ff; border:1px solid #c7d7fc; border-radius:14px; padding:32px; margin-bottom:48px; }
+.highlight h3 { font-size:17px; font-weight:700; color:#111827; margin-bottom:12px; }
+.highlight p { font-size:14px; line-height:1.9; color:#4b5563; margin-bottom:10px; }
+.highlight p:last-child { margin-bottom:0; }
+
+/* two pillars */
+.pillars { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:48px; }
+.pillar { background:#fff; border-radius:14px; padding:28px; border:1px solid #e5e7eb; box-shadow:0 2px 12px rgba(0,0,0,.04); }
+.pillar-num { font-size:40px; font-weight:700; color:#dbeafe; line-height:1; margin-bottom:10px; }
+.pillar h4 { font-size:15px; font-weight:700; color:#111827; margin-bottom:8px; }
+.pillar p { font-size:13px; line-height:1.8; color:#6b7280; }
+
+.footer-strip { background:#f0f4ff; border:1px solid #c7d7fc; border-radius:14px; padding:28px 32px; display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap; }
+.footer-strip p { font-size:14px; color:#4b5563; line-height:1.7; max-width:580px; }
+.page-footer { background:#f9fafc; border-top:1px solid #e5e7eb; padding:22px 45px; text-align:center; margin-top:60px; }
+.page-footer p { font-size:13px; color:#9ca3af; }
+@media(max-width:900px) { .pillars { grid-template-columns:1fr; } .navbar { padding:18px 24px; } .hero { padding:52px 24px 60px; } .container { padding:44px 24px; } }
+@media(max-width:600px) { .nav-links { display:none; } .services-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="/" class="logo"><div class="logo-circle">🏥</div>Digital HMS</a>
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/services/" class="active">Services</a>
+        <a href="/contact/">Contact</a>
+    </div>
+    <a href="/" class="btn-primary">← Back to Home</a>
+</nav>
+
+<section class="hero">
+    <div class="hero-inner">
+        <div class="hero-tag">⚕️ Healthcare Services Platform</div>
+        <h1>Services Provided by Our <span>Hospital Management</span> System</h1>
+        <p>A complete digital solution connecting all hospital departments into one centralized platform — improving efficiency, reducing paperwork, and delivering better patient care.</p>
+    </div>
+</section>
+
+<div class="container">
+
+    <div class="section-eyebrow">What We Offer</div>
+    <div class="section-heading">Core Services</div>
+
+    <div class="services-grid">
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">👤</div><h3>Patient Registration</h3></div>
+            <p>Maintain patient records digitally with easy storage, retrieval, and updating of patient details in a secure and organized way.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">📅</div><h3>Doctor Availability</h3></div>
+            <p>Check available doctors before booking to reduce confusion and improve scheduling efficiency across the reception desk.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">📝</div><h3>Appointment Booking</h3></div>
+            <p>Book appointments quickly with automatic token generation and appointment time allocation — no manual queuing needed.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">🔐</div><h3>OTP Verification</h3></div>
+            <p>Secure patient access for viewing, rescheduling, or cancelling appointments without the need for a permanent login account.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">🩺</div><h3>Doctor Consultation</h3></div>
+            <p>Doctors view appointments, access patient history, record diagnosis, and create digital prescriptions through a dedicated portal.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">💊</div><h3>Digital Prescription</h3></div>
+            <p>Replace handwritten prescriptions with digital records, reducing errors and connecting seamlessly with pharmacy and lab modules.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">🧪</div><h3>Laboratory Services</h3></div>
+            <p>Assign tests, upload reports, and update test statuses so doctors can access results quickly and efficiently.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">📦</div><h3>Pharmacy Inventory</h3></div>
+            <p>Manage medicine stock, update prices, and process prescribed medicines to avoid stock-related issues or delays.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">🧾</div><h3>Billing Management</h3></div>
+            <p>Generate bills automatically by combining doctor fees, laboratory tests, and medicine charges with better accuracy and speed.</p>
+        </div>
+        <div class="svc-card">
+            <div class="svc-header"><div class="svc-icon">📊</div><h3>Admin Monitoring</h3></div>
+            <p>Administrators manage doctors, staff, appointments, and completed bills for smooth hospital-wide supervision.</p>
+        </div>
+    </div>
+
+    <div class="pillars">
+        <div class="pillar">
+            <div class="pillar-num">01</div>
+            <h4>Connected Departments</h4>
+            <p>All departments — reception, doctor, lab, pharmacy, billing, and admin — work through one single platform instead of isolated systems.</p>
+        </div>
+        <div class="pillar">
+            <div class="pillar-num">02</div>
+            <h4>Reduced Manual Work</h4>
+            <p>Automatic token generation, digital prescriptions, and auto-generated bills eliminate repetitive manual tasks at every stage.</p>
+        </div>
+    </div>
+
+    <div class="highlight">
+        <h3>Why These Services Matter</h3>
+        <p>The main purpose of these services is to create a smooth digital workflow between all hospital departments. Instead of working separately using paper files, each department now communicates through one connected system.</p>
+        <p>This reduces patient waiting time, improves data accuracy, minimizes manual errors, and ensures better healthcare service delivery for everyone.</p>
+    </div>
+
+    <div class="footer-strip">
+        <p>Our system is designed to provide reliable, efficient, and user-friendly hospital services through a modern web-based platform.</p>
+        <a href="/" class="btn-primary">Go to Home →</a>
+    </div>
+</div>
+
+<footer class="page-footer">
+    <p>© Digital Hospital Management System · All rights reserved</p>
+</footer>
+
+</body>
+</html>

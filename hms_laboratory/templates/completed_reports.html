@@ -1,0 +1,133 @@
+{% extends "laboratoryHome.html" %}
+{% block content %}
+
+<style>
+.page-wrapper{
+    width:95%;
+    margin:30px auto;
+    font-family:'Inter',sans-serif;
+}
+
+.header{
+    background:linear-gradient(135deg,#10b981,#34d399);
+    padding:18px 25px;
+    border-radius:18px;
+    color:white;
+    font-weight:700;
+    font-size:18px;
+    margin-bottom:25px;
+    box-shadow:0 10px 25px rgba(16,185,129,0.25);
+}
+
+.card{
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(0,0,0,0.06);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px 12px;
+    border-bottom:1px solid #edf2f7;
+    font-size:14px;
+}
+
+th{
+    background:#f0fdf4;
+    font-weight:600;
+    color:#065f46;
+}
+
+tr:hover{
+    background:#f9fafb;
+}
+
+.status-badge{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+    background:#ecfdf5;
+    color:#047857;
+}
+
+.btn{
+    padding:6px 14px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    font-size:13px;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.btn:hover{
+    transform:scale(1.05);
+}
+</style>
+
+<div class="page-wrapper">
+
+    <div class="header">
+        ✅ Completed Test Reports
+    </div>
+
+    <div class="card">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Patient</th>
+                    <th>Age</th>
+                    <th>Test</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Report</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for test in tests %}
+                <tr>
+                    <td>{{ test.Appointment.PatientData.Patient_name }}</td>
+                    <td>{{ test.Appointment.PatientData.Patient_age }}</td>
+                    <td>{{ test.Test_name }}</td>
+                    <td>{{ test.Appointment.DoctorData.Doctor_name }}</td>
+                    <td>{{ test.Created_at|date:"d M Y" }}</td>
+                    <td>
+                        <span class="status-badge">
+                            {{ test.Test_status }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if test.Report_image %}
+                            <a href="{{ test.Report_image.url }}" >
+                                <button class="btn">View Report</button>
+                            </a>
+                        {% else %}
+                            <span style="color:#9ca3af;">No Report</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" style="text-align:center;color:#6b7280;">
+                        No completed reports available.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

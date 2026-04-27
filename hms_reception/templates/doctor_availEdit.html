@@ -1,0 +1,93 @@
+{% extends 'receptionHome.html' %}
+{% block content %}
+<style>
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f4f8fc;
+    }
+
+    .form-card {
+        width: 320px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 20px 22px;
+        border-radius: 10px;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
+    }
+
+    .form-card h3 {
+        text-align: center;
+        color: #0f4c75;
+        margin-bottom: 18px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 16px;
+    }
+
+    label {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #333;
+        text-transform: capitalize;
+    }
+
+    select {
+        padding: 9px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        outline: none;
+        transition: border-color 0.2s;
+    }
+
+    select:focus {
+        border-color: #0f4c75;
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 10px;
+        background: #0f4c75;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+        background: #0b3c5d;
+    }
+</style>
+
+<div class="form-card">
+    <h3>Update Availability</h3>
+
+    <form action="" method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Availability</label>
+            <select name="availability_status" required>
+                <option value="Available" {% if doctor.availability_status == "Available" %}selected{% endif %}>
+                    Available
+                </option>
+                <option value="Unavailable" {% if doctor.availability_status == "Unavailable" %}selected{% endif %}>
+                    Unavailable
+                </option>
+                <option value="On Leave" {% if doctor.availability_status == "On Leave" %}selected{% endif %}>
+                    On Leave
+                </option>
+            </select>
+        </div>
+
+        <button type="submit" class="submit-btn">Update</button>
+    </form>
+</div>
+{% endblock %}

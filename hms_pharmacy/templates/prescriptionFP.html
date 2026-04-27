@@ -1,0 +1,188 @@
+{% extends 'pharmacyHome.html' %}
+{% block content %}
+
+<style>
+/* Page Title */
+.page-title {
+    text-align: center;
+    margin: 30px 0;
+    font-weight: 600;
+    font-size: 24px;
+    color: #1e3a5f;
+}
+
+/* Card Wrapper */
+.table-card {
+    width: 90%;
+    margin: auto;
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* Table */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+/* Header */
+.custom-table thead {
+    background-color: #d9e8f6;
+}
+
+.custom-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #1e3a5f;
+}
+
+/* Body */
+.custom-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e6eef5;
+}
+
+/* Alternating rows */
+.custom-table tbody tr:nth-child(even) {
+    background-color: #f7fbff;
+}
+
+/* Hover effect */
+.custom-table tbody tr:hover {
+    background-color: #eaf3fb;
+    transition: 0.2s ease-in-out;
+}
+
+/* Center Action column */
+.custom-table td:last-child,
+.custom-table th:last-child {
+    text-align: center;
+}
+
+/* View Button */
+.view-btn {
+    background-color: #2c7dbf;
+    color: white;
+    padding: 6px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 13px;
+    display: inline-block;
+    transition: 0.2s;
+}
+
+.view-btn:hover {
+    background-color: #1b5f99;
+}
+
+/* Empty row styling */
+.empty-row {
+    text-align: center;
+    padding: 20px;
+    color: #888;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .table-card {
+        width: 100%;
+        padding: 15px;
+    }
+    .custom-table {
+        font-size: 13px;
+    }
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+
+<div class="table-card">
+<table class="custom-table">
+  <thead>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <tr>
+      <th>Patient Name</th>
+      <th>Age</th>
+      <th>Token Number</th>
+      <th>Medicine(s)</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for prescription in prescriptions %}
+  <tr>
+    <td>{{ prescription.Appointment.PatientData.Patient_name }}</td>
+    <td>{{ prescription.Appointment.PatientData.Patient_age }}</td>
+    <td>{{ prescription.Appointment.Token_number }}</td>
+    <td>
+      {% for med in prescription.medicines.all %}
+        {{ med.Medicine.Medicine_name }}{% if not forloop.last %}, {% endif %}
+      {% empty %}
+        No medicines
+      {% endfor %}
+    </td>
+    <td>
+      <a href="{% url 'view_prescription' prescription.id %}" class="view-btn">
+        View
+      </a>
+    </td>
+  </tr>
+  {% empty %}
+  <tr>
+    <td colspan="5" class="empty-row">
+        No prescriptions found.
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends 'patientHome.html' %}
+{% block content %}
+<head>
+    <title>Patient Registration & Appointment</title>
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f8fc;
+        }
+
+        .form-card {
+            width: 480px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 22px 26px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-card h2 {
+            text-align: center;
+            color: #003366;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #003366;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 6px;
+            border: 1px solid #cfddee;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group textarea {
+            height: 70px;
+            resize: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 4px rgba(13, 110, 253, 0.3);
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            background: #0d6efd;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0b5ed7;
+        }
+        .btn-view {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    background: #e2e8f0;
+    color: #1e293b;
+    transition: all 0.2s ease;
+}
+
+.btn-view:hover {
+    background: #cbd5e1;
+}
+/* Links */
+.links{
+    margin-top:18px;
+    text-align: center;}
+
+.links a{
+    text-decoration:none;
+    font-size:14px;
+    color:#2f5db3;
+    font-weight:500;
+}
+
+
+        /* Toast messages */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success { border-left: 5px solid #22c55e; }
+        .toast.error { border-left: 5px solid #ef4444; }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <h2>Patient Registration & Appointment</h2>
+
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+            <div class="toast {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+       <form action="{% url 'registerAndBook' %}" method="post">
+        {% csrf_token %}
+
+        <!-- Patient Info -->
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" pattern="[A-Za-z ]{2,}" title="Name must contain only letters and spaces (min 2 characters)" required>
+        </div>
+
+        <div class="form-group">
+            <label>Age</label>
+            <input type="number" name="age" min="1" max="150" title="Age must be between 1 and 150" required>
+        </div>
+
+        <div class="form-group">
+            <label>Gender</label>
+            <select name="gender" required>
+                <option value="">-- Select --</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" pattern="[0-9]{10}" placeholder="10-digit number" required>
+        </div>
+
+        <div class="form-group">
+            <label>Address</label>
+            <textarea name="address" required></textarea>
+        </div>
+
+        <!-- Appointment Info -->
+        <div class="form-group">
+            <label>Doctor</label>
+            <select name="doctor_name" required>
+                <option value="" disabled selected>Select a doctor</option>
+                {% for doctor in doctors %}
+                    <option value="{{ doctor.id }}">{{ doctor.Doctor_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Date</label>
+            <input type="date" name="date" id="date" required>
+            <script>document.getElementById('date').min = new Date().toISOString().split('T')[0];</script>
+        </div>
+
+        <button type="submit">Register & Book Appointment</button>
+        </form>
+        <div class="links">
+                <a href="{% url 'hms_home' %}">← Back to Home</a>
+        </div>    
+</div>
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

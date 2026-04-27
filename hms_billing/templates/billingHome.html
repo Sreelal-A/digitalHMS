@@ -1,0 +1,299 @@
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Billing Panel - Digital Hospital</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter', sans-serif;
+}
+
+body{
+    display:flex;
+    height:100vh;
+    background:#eef2f7;
+}
+
+/* ================= SIDEBAR ================= */
+nav{
+    width:250px;
+    background:#ffffff;
+    padding:30px 0;
+    box-shadow:5px 0 25px rgba(0,0,0,0.05);
+    display:flex;
+    flex-direction:column;
+}
+
+nav h2{
+    font-size:16px;
+    font-weight:600;
+    color:#2f5db3;
+    padding:0 30px 20px;
+}
+
+nav a{
+    text-decoration:none;
+    color:#6b7280;
+    padding:14px 30px;
+    font-size:14px;
+    font-weight:500;
+    transition:0.3s ease;
+    border-left:3px solid transparent;
+}
+
+nav a:hover{
+    background:#f3f6ff;
+    color:#2f5db3;
+    border-left:3px solid #4c79ff;
+}
+
+/* ================= MAIN ================= */
+.main{
+    border-left: 240px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    overflow:auto;
+}
+
+/* ================= HEADER ================= */
+header{
+    background:#ffffff;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 5px 20px rgba(0,0,0,0.04);
+}
+
+.header-left h1{
+    font-size:18px;
+    font-weight:600;
+    color:#111827;
+}
+
+.header-left p{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:3px;
+}
+
+/* ================= LOGOUT ================= */
+.logout-btn{
+    padding:8px 18px;
+    border-radius:8px;
+    border:1.5px solid #ef4444;
+    background:#ffffff;
+    color:#ef4444;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.logout-btn:hover{
+    background:#ef4444;
+    color:#ffffff;
+}
+
+/* ================= CONTENT ================= */
+.content{
+    padding:40px;
+    flex:1;
+}
+
+/* ================= HERO ================= */
+.hero{
+    background:linear-gradient(135deg,#c7d8f5,#e7efff);
+    padding:45px;
+    border-radius:18px;
+    margin-bottom:40px;
+}
+
+.hero h2{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:10px;
+    color:#111827;
+}
+
+.hero p{
+    font-size:14px;
+    color:#374151;
+    margin-bottom:20px;
+}
+
+.hero button{
+    padding:10px 22px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#4c79ff,#3b5bdb);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.hero button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(76,121,255,0.35);
+}
+
+/* ================= FEATURES ================= */
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.feature{
+    background:#ffffff;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 18px 35px rgba(0,0,0,0.06);
+    transition:0.3s ease;
+}
+
+.feature:hover{
+    transform:translateY(-6px);
+    box-shadow:0 25px 50px rgba(0,0,0,0.1);
+}
+
+.feature h3{
+    font-size:16px;
+    margin-bottom:10px;
+    color:#111827;
+}
+
+.feature p{
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* ================= FOOTER ================= */
+footer{
+    background:#ffffff;
+    padding:15px 40px;
+    text-align:center;
+    font-size:13px;
+    color:#6b7280;
+    border-top:1px solid #e5e7eb;
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+</head>
+
+<body>
+
+<nav>
+    <h2>💳 Billing Panel</h2>
+    <a href="{% url 'billingHome' %}">🏠 Home</a>
+    <a href="{% url 'billing_patient_list' %}">🧾 Patient Details</a>
+    <a href="{% url 'billing_patient_list' %}">📄 Invoice Management</a>
+    <a href="{% url 'completed_bills' %}">📊 Billing Reports</a>
+</nav>
+
+<div class="main">
+{% block content %}
+<header>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <div class="header-left">
+        <h1>Digital Hospital Management System</h1>
+        <p>Billing Staff • Secure • Fast Invoicing</p>
+    </div>
+
+    <form action="{% url 'Logout' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit" class="logout-btn">Logout</button>
+    </form>
+</header>
+
+<div class="content">
+
+<section class="hero">
+    <h2>Welcome Back 💼</h2>
+    <p>Fetch patient details, generate bills, and create invoices efficiently from one centralized dashboard.</p>
+    <button>Go to Billing</button>
+</section>
+
+<section class="features">
+
+<div class="feature">
+    <h3>🧾 Patient Lookup</h3>
+    <p>Search and fetch patient details required for billing and service processing.</p>
+</div>
+
+<div class="feature">
+    <h3>➕ Generate Bills</h3>
+    <p>Create detailed bills based on consultation, lab tests, medicines, and services.</p>
+</div>
+
+<div class="feature">
+    <h3>📄 Invoice Management</h3>
+    <p>Generate and manage invoices with download and print capabilities.</p>
+</div>
+
+<div class="feature">
+    <h3>📊 Billing Reports</h3>
+    <p>Track daily revenue, pending payments, and invoice summaries.</p>
+</div>
+
+</section>
+
+</div>
+
+<footer>
+    © 2026 Digital Hospital Management System | Designed for Modern Healthcare
+</footer>
+
+</div>
+{% endblock %}
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>

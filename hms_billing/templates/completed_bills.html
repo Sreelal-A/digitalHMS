@@ -1,0 +1,144 @@
+{% extends 'billingHome.html' %}
+{% block content %}
+
+<style>
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 15px 35px rgba(0,0,0,.06);
+}
+
+.page-title{
+    margin-bottom:20px;
+    font-size:20px;
+    font-weight:600;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px 16px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+th{
+    background:#f3f6ff;
+    text-align:left;
+    font-weight:700;
+}
+
+tr:hover{
+    background:#f9fbff;
+}
+
+.action-btn{
+    padding:6px 12px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    color:#fff;
+    margin-right:6px;
+}
+
+.view-btn{
+    background:#3b5bdb;
+}
+
+.print-btn{
+    background:#16a34a;
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+<div class="content">
+
+<div class="card">
+
+<div class="page-title">🧾 Completed Bills</div>
+{% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+<table>
+<thead>
+<tr>
+    <th>Bill ID</th>
+    <th>Patient</th>
+    <th>Doctor</th>
+    <th>Date</th>
+    <th>Total Amount</th>
+    <th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for bill in bills %}
+<tr>
+    <td>#{{ bill.id }}</td>
+    <td>{{ bill.appointment.PatientData.Patient_name }}</td>
+    <td>{{ bill.appointment.DoctorData.Doctor_name }}</td>
+    <td>{{ bill.created_at|date:"d-m-Y" }}</td>
+    <td>₹ {{ bill.total_amount }}</td>
+    <td>
+        <a href="{% url 'bill_detail' bill.id %}" class="action-btn view-btn">View</a>
+        <a href="{% url 'bill_detail' bill.id %}" class="action-btn print-btn" target="_blank">Print</a>
+    </td>
+</tr>
+{% empty %}
+<tr>
+    <td colspan="6">No bills generated yet.</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

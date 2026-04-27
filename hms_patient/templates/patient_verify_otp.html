@@ -1,0 +1,43 @@
+{% extends "patientHome.html" %}
+{% block content %}
+
+<style>
+.page-wrap{ padding:40px; }
+.card{
+  max-width:520px; margin:0 auto;
+  background:#fff; border-radius:18px;
+  padding:28px; box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+.card h2{ font-size:20px; margin-bottom:8px; color:#111827; }
+.card p{ font-size:13px; color:#6b7280; margin-bottom:18px; }
+input{
+  width:100%; padding:12px 14px; border-radius:12px;
+  border:1px solid #e5e7eb; outline:none;
+}
+.btn{
+  width:100%; padding:12px 16px; border:none; border-radius:12px;
+  background:linear-gradient(135deg,#4c79ff,#3b5bdb);
+  color:#fff; font-weight:700; cursor:pointer;
+  margin-top:12px;
+}
+.small{ font-size:12px; color:#6b7280; margin-top:10px; }
+</style>
+
+<div class="content">
+  <div class="page-wrap">
+    <div class="card">
+      <h2>Verify OTP</h2>
+      <p>OTP sent to <b>{{ phone }}</b> (Token: <b>{{ token }}</b>)</p>
+
+      <form method="POST" action="{% url 'patient_verify_otp_submit' %}">
+        {% csrf_token %}
+        <input type="text" name="otp" placeholder="Enter 6-digit OTP" required>
+        <button class="btn" type="submit">Verify & View Appointments</button>
+      </form>
+
+      <div class="small">Didn’t receive OTP? Go back and resend.</div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

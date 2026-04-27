@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Hospital Management System</title>
+  <style>
+    *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Inter', sans-serif;
+}
+
+body{
+    padding-left: 240px;
+    display:flex;
+    height:100vh;
+    background:#eef2f7;
+    color:#111827;
+}
+
+/* ================= SIDEBAR ================= */
+nav{
+    width:240px;
+    background:#ffffff;
+    display:flex;
+    flex-direction:column;
+    padding:30px 0;
+    box-shadow:5px 0 25px rgba(0,0,0,0.05);
+}
+
+nav a{
+    text-decoration:none;
+    color:#6b7280;
+    padding:14px 30px;
+    font-size:14px;
+    font-weight:500;
+    transition:0.3s ease;
+    border-left:3px solid transparent;
+}
+
+nav a:hover{
+    background:#f3f6ff;
+    color:#2f5db3;
+    border-left:3px solid #4c79ff;
+}
+
+/* ================= MAIN ================= */
+.main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+}
+
+/* ================= HEADER ================= */
+header{
+    background:#ffffff;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 5px 20px rgba(0,0,0,0.04);
+}
+
+.header-left h1{
+    font-size:18px;
+    font-weight:600;
+}
+
+.header-left p{
+    font-size:13px;
+    color:#6b7280;
+    margin-top:3px;
+}
+
+/* Logout Button */
+.logout-btn{
+    padding:8px 18px;
+    border-radius:8px;
+    border:1.5px solid #ef4444;
+    background:#ffffff;
+    color:#ef4444;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.logout-btn:hover{
+    background:#ef4444;
+    color:#ffffff;
+}
+
+/* ================= CONTENT ================= */
+.content{
+    padding:40px;
+}
+
+/* ================= WELCOME CARD ================= */
+.welcome-card{
+    background:linear-gradient(135deg,#dbe7ff,#c7d8f5);
+    padding:45px;
+    border-radius:18px;
+    margin-bottom:40px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.06);
+}
+
+.welcome-card h2{
+    font-size:24px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.welcome-card p{
+    font-size:14px;
+    color:#374151;
+    margin-bottom:20px;
+}
+
+.welcome-card button{
+    padding:10px 22px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#4c79ff,#3b5bdb);
+    color:#fff;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s ease;
+}
+
+.welcome-card button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(76,121,255,0.35);
+}
+
+/* ================= FEATURE CARDS ================= */
+.features{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:25px;
+}
+
+.feature{
+    background:#ffffff;
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 18px 35px rgba(0,0,0,0.06);
+    transition:0.3s ease;
+}
+
+.feature:hover{
+    transform:translateY(-6px);
+    box-shadow:0 25px 50px rgba(0,0,0,0.1);
+}
+
+.feature h3{
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+.feature p{
+    font-size:13px;
+    color:#6b7280;
+}
+
+/* ================= FOOTER ================= */
+footer{
+    background:#ffffff;
+    padding:15px;
+    text-align:center;
+    font-size:13px;
+    color:#6b7280;
+    margin-top:auto;
+    border-top:1px solid #e5e7eb;
+}
+/* ================= SIDEBAR ================= */
+nav{
+    position: fixed;      /* ADD THIS */
+    top: 0;               /* ADD THIS */
+    left: 0;              /* ADD THIS */
+
+    width:240px;
+    height:100vh;         /* ADD THIS */
+
+    background:#ffffff;
+    display:flex;
+    flex-direction:column;
+    padding:35px 0;
+    box-shadow:8px 0 30px rgba(0,0,0,0.05);
+
+    overflow-y:auto;      /* Optional scroll if long menu */
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+  </style>
+</head>
+<body>
+  <!-- Sidebar Menu -->
+  <nav>
+    <a href="{% url 'pharmacyHome' %}">🏠 Home</a>
+    <a href="{% url 'prescriptionFP' %}">Prescriptions</a>
+    <a href="{% url 'lab_reports_pharmacy' %}">Lab Reports</a>
+    <a href="{% url 'addMedicine' %}">Medicine </a>
+  </nav>
+   {% block content %}
+  <!-- Main Content -->
+  <div class="main">
+    <header>
+        {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+  <div class="header-left">
+    <h1>Digital Hospital Management System</h1>
+    <p>Efficient • Secure • Patient-Centered</p>
+  </div>
+
+  <form action="{% url 'Logout' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit" class="logout-btn">Logout</button>
+  </form>
+</header>
+    <div class="content">
+
+<section class="welcome-card">
+  <h2>Welcome Back 👋</h2>
+  <p>
+    Manage hospital operations, monitor inventory, and oversee system
+    performance from one centralized dashboard.
+  </p>
+  <button>Go to Management</button>
+</section>
+
+<section class="features">
+
+  <div class="feature">
+    <h3>💊 Medicine Management</h3>
+    <p>Add, update, and track available medicines and stock levels.</p>
+  </div>
+
+  <div class="feature">
+    <h3>📦 Inventory Control</h3>
+    <p>Monitor medicine quantities and manage low-stock alerts efficiently.</p>
+  </div>
+
+  <div class="feature">
+    <h3>📊 Reports & Analytics</h3>
+    <p>Generate stock and usage reports to improve operational decisions.</p>
+  </div>
+
+  <div class="feature">
+    <h3>⚙ System Settings</h3>
+    <p>Configure system preferences and manage user access securely.</p>
+  </div>
+
+</section>
+</div>
+    <footer>
+      <p>&copy; 2026 Digital Hospital Management System | All Rights Reserved</p>
+    </footer>
+  </div>
+   {% endblock %}
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+</html>

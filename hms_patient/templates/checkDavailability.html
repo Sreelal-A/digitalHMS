@@ -1,0 +1,217 @@
+{% extends 'patientHome.html' %}
+{% block content %}
+
+<style>
+    /* Page title */
+.page-title {
+    text-align: center;
+    margin-top: 30px;
+    color: #003366;
+    font-weight: 600;
+}
+/* Table title */
+.table-title {
+    margin-bottom: 10px;
+}
+
+.table-title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #003366;
+}
+
+
+/* Card container */
+.table-card {
+    width: fit-content;
+    max-width: 90%;
+    margin: 20px auto 40px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Table */
+.availability-table {
+    border-collapse: collapse;
+    min-width: 650px;
+}
+
+/* Header */
+.availability-table thead tr {
+    background: #e6f2ff;
+}
+
+.availability-table th {
+    padding: 10px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #003366;
+    text-align: center;
+}
+
+/* Body */
+.availability-table td {
+    padding: 9px 16px;
+    font-size: 14px;
+    text-align: center;
+    border-top: 1px solid #e3eef9;
+}
+
+.availability-table tbody tr:hover {
+    background: #f4f9ff;
+}
+
+/* Status badges */
+.status {
+    padding: 4px 12px;
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.status.available {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status.unavailable {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.status.leave {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+/* Edit button */
+.edit-btn {
+    padding: 5px 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    background: #cfe2ff;
+    color: #084298;
+    cursor: pointer;
+}
+
+.edit-btn:hover {
+    background: #b6d4fe;
+}
+/* Links */
+.links{
+    margin-top:18px;
+}
+
+.links a{
+    text-decoration:none;
+    font-size:14px;
+    color:#2f5db3;
+    font-weight:500;
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+</style>
+<div class="table-title">
+<h3 class="page-title">Doctor Availability</h3>
+</div>
+
+<div class="table-card">
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <table class="availability-table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Availability</th>
+                
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for doctor in doctors %}
+            <tr>
+                <td>{{ doctor.Doctor_name }}</td>
+                <td>{{ doctor.Doctor_department }}</td>
+                <td>
+                    {% if doctor.availability_status == "Available" %}
+                        <span class="status available">Available</span>
+                    {% elif doctor.availability_status == "Unavailable" %}
+                        <span class="status unavailable">Unavailable</span>
+                    {% elif doctor.availability_status == "On Leave" %}
+                        <span class="status leave">On Leave</span>
+                    {% endif %}
+                </td>
+                
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="text-align:center; margin-top: 25px;">
+    <a href="{% url 'registerAndBook' %}">
+        <button style="
+            padding:10px 22px;
+            background:#0d6efd;
+            color:white;
+            border:none;
+            border-radius:8px;
+            font-size:14px;
+            cursor:pointer;">
+            Book Appointment
+        </button>
+    </a>
+    <div class="links">
+        <a href="{% url 'hms_home' %}">← Back to Home</a>
+    </div>
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}
+
+

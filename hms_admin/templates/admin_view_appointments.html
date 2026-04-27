@@ -1,0 +1,113 @@
+{% extends "adminHome.html" %}
+{% block content %}
+
+<style>
+.page-wrapper{
+    width:95%;
+    margin:30px auto;
+    font-family:Inter,sans-serif;
+}
+.header{
+    background:linear-gradient(135deg,#5b7cff,#7c5cff);
+    padding:18px 22px;
+    border-radius:18px;
+    color:white;
+    font-weight:800;
+    font-size:20px;
+    box-shadow:0 10px 25px rgba(99,102,241,.25);
+    margin-bottom:20px;
+}
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+.table-wrap{
+    overflow-x:auto;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+th, td{
+    padding:12px 14px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+th{
+    background:#f3f6ff;
+    color:#1e293b;
+}
+tr:hover{
+    background:#f9fbff;
+}
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+}
+.badge.pending{
+    background:#fff7ed;
+    color:#c2410c;
+}
+.badge.completed{
+    background:#ecfdf5;
+    color:#15803d;
+}
+.empty{
+    text-align:center;
+    padding:20px;
+    color:#64748b;
+}
+</style>
+
+<div class="page-wrapper">
+    <div class="header">All Appointments</div>
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Date</th>
+                        <th>Token</th>
+                        <th>Time</th>
+                        <th>Prescription Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appt in appointments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ appt.PatientData.Patient_name }}</td>
+                        <td>{{ appt.DoctorData.Doctor_name }}</td>
+                        <td>{{ appt.Date }}</td>
+                        <td>{{ appt.Token_number }}</td>
+                        <td>{{ appt.Appointment_time }}</td>
+                        <td>
+                            {% if appt.Prescription_status == "Completed" %}
+                                <span class="badge completed">{{ appt.Prescription_status }}</span>
+                            {% else %}
+                                <span class="badge pending">{{ appt.Prescription_status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="empty">No appointments found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

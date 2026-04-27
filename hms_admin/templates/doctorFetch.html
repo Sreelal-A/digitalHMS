@@ -1,0 +1,178 @@
+{% extends "adminHome.html" %}
+{% block content %}
+<style>
+   /* Card container (THIS fixes the huge height issue) */
+.table-card {
+    width: fit-content;
+    max-width: 95%;
+    margin: 60px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Table */
+.data-table {
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+/* Header */
+.data-table thead tr {
+    background: #e6f2ff;
+}
+
+.data-table th {
+    padding: 10px 14px;
+    font-weight: 600;
+    font-size: 15px;
+    color: #003366;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Body rows */
+.data-table td {
+    padding: 9px 14px;
+    font-size: 14px;
+    text-align: center;
+    border-top: 1px solid #e3eef9;
+    white-space: nowrap;
+}
+
+/* Row hover */
+.data-table tbody tr:hover {
+    background-color: #f4f9ff;
+}
+
+/* Buttons  */
+/* Delete Button - soft red modern style */
+.btn-delete {
+    background: #ffe5e5;
+    color: #b30000;
+    border: 1px solid #ffb3b3;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: #ff4d4d;
+    color: #ffffff;
+    border-color: #ff4d4d;
+    transform: translateY(-1px);
+}
+
+/* Edit Button - soft blue modern style */
+.btn-edit {
+    background: #e0f0ff;
+    color: #0b5ed7;
+    border: 1px solid #b6d4fe;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+    background: #0b5ed7;
+    color: #ffffff;
+    border-color: #0b5ed7;
+    transform: translateY(-1px);
+}
+
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+<body>
+<div class="table-card">
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>S No</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Password</th>
+                <th>Phone</th>
+                <th>Department</th>
+                <th>Availability Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for doctor in doctors %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ doctor.Doctor_name }}</td>
+                <td>{{ doctor.Doctor_username }}</td>
+                <td>{{ doctor.Doctor_password }}</td>
+                <td>{{ doctor.Doctor_phone }}</td>
+                <td>{{ doctor.Doctor_department }}</td>
+                <td>{{ doctor.availability_status }}</td>
+                <td>
+                    <a href="{% url 'doctor_delete' id=doctor.id %}">
+                            <button class="btn-delete">Delete</button></a>
+                            
+                    <a href="{% url 'doctor_edit' id=doctor.id %}">
+                        <button class="btn-edit">Edit</button></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+
+{% endblock %}

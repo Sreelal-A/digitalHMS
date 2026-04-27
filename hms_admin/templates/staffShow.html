@@ -1,0 +1,241 @@
+{% extends 'adminHome.html' %}
+{% block content %}
+<style>
+/* Card */
+.table-card {
+    width: fit-content;
+    max-width: 95%;
+    margin: 40px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Header (search area) */
+.table-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+}
+
+/* Search box wrapper */
+.search-box {
+    display: flex;
+    align-items: center;
+    background: #f4f8ff;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid #cfddee;
+}
+
+/* Search select */
+.search-box select {
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    outline: none;
+}
+
+/* Search button */
+.search-box button {
+    padding: 8px 18px;
+    margin-left: 8px;
+    border: none;
+    border-radius: 6px;
+    background: #003366;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.search-box button:hover {
+    background: #0052a3;
+}
+
+/* Table */
+.patient-table {
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.patient-table thead tr {
+    background: #e6f2ff;
+}
+
+.patient-table th {
+    padding: 10px 14px;
+    font-weight: 600;
+    color: #003366;
+    text-align: center;
+}
+
+.patient-table td {
+    padding: 9px 14px;
+    text-align: center;
+    border-top: 1px solid #e3eef9;
+}
+
+/* Actions */
+.action-cell {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+/* Buttons  */
+/* Delete Button - soft red modern style */
+.btn-delete {
+    background: #ffe5e5;
+    color: #b30000;
+    border: 1px solid #ffb3b3;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete:hover {
+    background: #ff4d4d;
+    color: #ffffff;
+    border-color: #ff4d4d;
+    transform: translateY(-1px);
+}
+
+/* Edit Button - soft blue modern style */
+.btn-edit {
+    background: #e0f0ff;
+    color: #0b5ed7;
+    border: 1px solid #b6d4fe;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+    background: #0b5ed7;
+    color: #ffffff;
+    border-color: #0b5ed7;
+    transform: translateY(-1px);
+}
+
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+<body>
+
+<!-- Table card -->
+<div class="table-card">
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Filter bar INSIDE card -->
+    <div class="table-header">
+    <form method="get" action="{% url 'staffShow' %}">
+        <div class="search-box">
+            <select name="usertype">
+                <option value="">Search by User Type</option>
+                <option value="Laboratory">Laboratory</option>
+                <option value="Receptionist">Receptionist</option>
+                <option value="Pharmacy">Pharmacy</option>
+                <option value="Billing">Billing</option>
+            </select>
+            <button type="submit">Search</button>
+        </div>
+    </form>
+</div>
+
+    <!-- Table -->
+    <table class="patient-table">
+        <thead>
+            <tr>
+                <th style="width:5%">S No</th>
+                <th style="width:15%">Name</th>
+                <th style="width:15%">Username</th>
+                <th style="width:15%">Password</th>
+                <th style="width:15%">Phone</th>
+                <th style="width:15%">User Type</th>
+                <th style="width:20%">Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for staff in staffs %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ staff.Staff_name }}</td>
+                <td>{{ staff.Staff_username }}</td>
+                <td>{{ staff.Staff_password }}</td>
+                <td>{{ staff.Staff_phone_no }}</td>
+                <td>{{ staff.Staff_user_type }}</td>
+                <td class="action-cell">
+                    <a href="{% url 'staff_delete' id=staff.id %}">
+                        <button class="btn-delete">Delete</button>
+                    </a>
+                    <a href="{% url 'staff_edit' id=staff.id %}">
+                        <button class="btn-edit">Edit</button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+
+
+
+
+{% endblock %}

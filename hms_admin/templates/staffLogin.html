@@ -1,0 +1,128 @@
+<html>
+<style>
+body {
+  font-family: 'Poppins', sans-serif;
+ background:linear-gradient(180deg,#c7d8f5 0%, #a9c3eb 60%, #ffffff 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Card */
+.login-card {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(130, 207, 243, 0.15);
+  text-align: center;
+  width: 340px;
+  border: 1px solid #e6f2fb;
+}
+
+/* Heading */
+.login-card h2 {
+  margin-bottom: 25px;
+  color: #628beb;
+  font-weight: 600;
+}
+
+/* Inputs */
+.login-card input,
+.login-card select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #e6f2fb;
+  border-radius: 12px;
+  background: #f9fcff;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.login-card input:focus,
+.login-card select:focus {
+  outline: none;
+  border-color: #82cff3;
+  box-shadow: 0 0 8px rgba(130, 207, 243, 0.4);
+}
+
+/* Button */
+.login-card button {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #82cff3, #628beb);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.login-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(98, 139, 235, 0.3);
+}
+
+/* Links */
+.links{
+    margin-top:18px;
+}
+
+.links a{
+    text-decoration:none;
+    font-size:14px;
+    color:#2f5db3;
+    font-weight:500;
+}
+
+/* Footer */
+.footer {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #999;
+}
+</style>
+<div class="center-wrap">
+  <div class="login-card">
+    <h2>🏥 HMS Staff Login</h2>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <!-- <form onsubmit="login(event)"> -->
+      <form action="{% url 'staff_login' %}" method="post">
+        {% csrf_token %}
+      <input type="text" id="user" name="username" placeholder="👤 Username" required>
+      <input type="password" id="pass" name="password" placeholder="🔒 Password" required>
+
+      <select id="usertype" name="usertype" required>
+          <option value="">⚙️ User Type</option>
+          <option value="Laboratory">Laboratory</option>
+          <option value="Receptionist">Receptionist</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Billing">Billing</option>
+      </select>
+      <button type="submit">LOGIN</button>
+    </form>
+    <div class="links">
+      <a href="{% url 'hms_home' %}">← Back to Home</a>
+    </div>
+    <div class="footer">Authorized Personnel Only</div>
+  </div>
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+
+</html>

@@ -1,0 +1,162 @@
+{% extends 'billingHome.html' %}
+{% block content %}
+
+<style>
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+
+.page-title{
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:20px;
+}
+
+.table-wrapper{
+    overflow:hidden;
+    border-radius:14px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:14px 16px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+th{
+    background:#f3f6ff;
+    text-align:left;
+    color:#111827;
+}
+
+tr:hover{
+    background:#f9fbff;
+}
+
+.btn{
+    background:#3b5bdb;
+    color:#fff;
+    padding:8px 12px;
+    border-radius:10px;
+    text-decoration:none;
+    font-weight:700;
+    font-size:13px;
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+<div class="content">
+
+<div class="card">
+
+<div class="page-title">🧾 Appointments Ready for Billing</div>
+{% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+<div class="table-wrapper">
+<table>
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Token</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for a in appointments %}
+        <tr>
+            <td>{{ a.PatientData.Patient_name }} ({{ a.PatientData.Patient_phone }})</td>
+            <td>{{ a.DoctorData.Doctor_name }}</td>
+            <td>{{ a.Date }}</td>
+            <td>{{ a.Token_number }}</td>
+            <td>
+                {% if a.bill_obj %}
+                    {% if a.bill_obj.status == 'COMPLETED' %}
+                        <span style="color:#16a34a;font-weight:700;">🟢 Completed</span>
+                    {% else %}
+                        <span style="color:#f59e0b;font-weight:700;">🟡 Pending</span>
+                    {% endif %}
+                {% else %}
+                    <span style="color:#6b7280;font-weight:700;">Not Generated</span>
+                {% endif %}
+            </td>
+
+            <!-- ACTION COLUMN -->
+            <td>
+                {% if a.bill_obj %}
+                    <a class="btn" href="{% url 'bill_detail' a.bill_obj.id %}">
+                        View Bill
+                    </a>
+                {% else %}
+                    <a class="btn" href="{% url 'generate_bill' a.id %}">
+                        Generate Bill
+                    </a>
+                {% endif %}
+            </td>
+            
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">No completed appointments found.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+</div>
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

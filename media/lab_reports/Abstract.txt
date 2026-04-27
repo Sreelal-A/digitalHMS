@@ -1,0 +1,14 @@
+Abstract
+This project presents a Hospital Management System (HMS) designed to modernize healthcare delivery by replacing error-prone paper records with a unified digital platform. The system addresses two critical challenges: illegible handwriting and fragmented communication between departments such as laboratories, pharmacies, and wards, both of which contribute to patient delays and inefficiencies.
+The HMS integrates an HTML/CSS/JavaScript frontend with a robust Django (Python) backend, ensuring centralized access to patient records, secure prescriptions, and digitalized laboratory reports. By enabling real-time data sharing across departments, the system fosters coordinated care and minimizes administrative bottlenecks.
+The primary objective is to reduce patient queues and waiting times by eliminating paperwork errors and streamlining hospital workflows, thereby saving valuable time for both patients and healthcare staff.
+The system is structured around six core modules:
+- Patient Management – Registration and maintenance of Electronic Health Records (EHR).
+- Appointment & Scheduling – Efficient booking, tracking, and optimization of patient visits.
+- Doctor/Physician Module – Access to EHRs, digital prescription issuance, and diagnosis recording.
+- Laboratory Management – Digital test requests, sample tracking, and instant report publication.
+- Pharmacy & Inventory Management – Processing prescriptions and monitoring drug stock levels.
+- Billing & Administration – Automated invoice generation, payment tracking, and financial reporting.
+Together, these modules form a comprehensive solution that enhances accuracy, efficiency, and patient satisfaction in hospital operations.
+
+

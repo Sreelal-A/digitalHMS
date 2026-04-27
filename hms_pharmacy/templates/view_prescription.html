@@ -1,0 +1,245 @@
+{% extends 'pharmacyHome.html' %}
+{% block content %}
+
+<style>
+body {
+    font-family: 'Times New Roman', Georgia, serif;
+    background: #fdfdfd;
+    color: #000;
+}
+
+/* Center Wrapper */
+.prescription-wrapper{
+    max-width: 820px;
+    margin: 30px auto;
+}
+
+/* Print Button */
+.print-bar{
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.print-btn {
+    padding: 10px 18px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.print-btn:hover {
+    background: #333;
+}
+
+/* Prescription Sheet */
+.prescription-sheet {
+    padding: 30px 40px;
+    border: 2px solid #000;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.hospital-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+.hospital-header h2 {
+    margin: 0;
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+.hospital-header p {
+    margin: 3px 0;
+    font-size: 14px;
+}
+
+/* Patient Info */
+.patient-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 40px;
+    margin-bottom: 25px;
+}
+.patient-info div {
+    font-size: 15px;
+}
+
+/* Section Titles */
+.section-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #000;
+    padding-bottom: 3px;
+}
+
+/* Tables */
+.prescription-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.prescription-table th,
+.prescription-table td {
+    border: 1px solid #000;
+    padding: 8px 10px;
+    text-align: center;
+    font-size: 14px;
+}
+.prescription-table th {
+    background: #f0f0f0;
+}
+
+/* Notes */
+.notes {
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #000;
+    min-height: 60px;
+}
+
+.print-bar-bottom{
+    text-align: center;
+    margin-top: 20px;
+}
+
+.print-btn {
+    padding: 10px 20px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.print-btn:hover {
+    background: #333;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .prescription-sheet,
+    .prescription-sheet * {
+        visibility: visible;
+    }
+
+    .prescription-sheet {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border: 2px solid #000;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 40px;
+    }
+
+    .print-bar-bottom {
+        display: none !important;
+    }
+}
+</style>
+
+<div class="prescription-wrapper">
+
+   
+
+    <div class="prescription-sheet">
+
+        <div class="hospital-header">
+            <h2>ABC HOSPITAL</h2>
+            <p>Address Line, City, Phone: 1234567890</p>
+        </div>
+
+        <div class="patient-info">
+            <div><strong>Patient Name:</strong> {{ appointment.PatientData.Patient_name }}</div>
+            <div><strong>Age / Gender:</strong> {{ appointment.PatientData.Patient_age }} / {{ appointment.PatientData.Patient_gender }}</div>
+            <div><strong>Doctor:</strong> {{ prescription.Appointment.DoctorData.Doctor_name }}</div>
+            <div><strong>Date:</strong> {{ prescription.Appointment.Date }}</div>
+            <div><strong>Diagnosis:</strong> {{ prescription.Diagnosis }}</div>
+            <div><strong>Duration:</strong> {{ prescription.Duration }} days</div>
+        </div>
+
+        <div class="section-title">Prescribed Medicines</div>
+
+        <table class="prescription-table">
+            <thead>
+                <tr>
+                    <th>Medicine</th>
+                    <th>Morning</th>
+                    <th>Afternoon</th>
+                    <th>Night</th>
+                    <th>Instructions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in prescription.medicines.all %}
+                <tr>
+                    <td>{{ med.Medicine.Medicine_name }}</td>
+                    <td>{{ med.Morning|yesno:"✔,—" }}</td>
+                    <td>{{ med.Afternoon|yesno:"✔,—" }}</td>
+                    <td>{{ med.Night|yesno:"✔,—" }}</td>
+                    <td>{{ med.Instructions|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No medicines prescribed.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="section-title">Assigned Tests</div>
+
+        <table class="prescription-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Test Name</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th>Assigned On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ test.Test_name }}</td>
+                    <td>{{ test.Notes|default:"—" }}</td>
+                    <td>{{ test.Test_status }}</td>
+                    <td>{{ test.Created_at|date:"d M Y, H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No tests assigned.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="section-title">Additional Notes</div>
+        <div class="notes">
+            {{ prescription.Notes|default:"—" }}
+        </div>
+
+    </div>
+    <!-- Centered Print Button -->
+        <div class="print-bar-bottom">
+            <button type="button" class="print-btn" onclick="window.print()">
+                🖨 Print Prescription
+            </button>
+        </div>
+</div>
+
+{% endblock %}

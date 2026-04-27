@@ -1,0 +1,174 @@
+{% extends 'receptionHome.html'%}
+{% block content %}
+
+<style>
+    /* Card */
+.table-card {
+    width: fit-content;
+    max-width: 95%;
+    margin: 30px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.table-title {
+    margin-bottom: 10px;
+}
+
+.table-title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #003366;
+}
+
+/* Table */
+.appointment-table {
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.appointment-table thead tr {
+    background: #e6f2ff;
+}
+
+.appointment-table th {
+    padding: 10px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #003366;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.appointment-table td {
+    padding: 9px 14px;
+    font-size: 14px;
+    text-align: center;
+    border-top: 1px solid #e3eef9;
+    white-space: nowrap;
+}
+
+.appointment-table tbody tr:hover {
+    background: #f4f9ff;
+}
+
+/* Action buttons */
+.action-cell {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 5px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.action-btn.edit {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+
+
+/* Empty state */
+.empty-row {
+    text-align: center;
+    font-size: 14px;
+    color: #6c757d;
+    padding: 16px;
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+<div class="table-card">
+{% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <div class="table-title">
+        <h3>Appointments</h3>
+    </div>
+
+    <table class="appointment-table">
+        <thead>
+            <tr>
+                <th>Token</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.Token_number }}</td>
+                <td>{{ appointment.PatientData.Patient_name }}</td>
+                <td>{{ appointment.DoctorData.Doctor_name }}</td>
+                <td>{{ appointment.Date }}</td>
+                <td>{{ appointment.Appointment_time|time:"h:i A" }}</td> 
+                <td class="action-cell">
+                    <a href="{% url 'appointmentEdit' appointment.id %}"><button class="action-btn edit">Edit</button></a>
+                </td>
+            </tr>
+
+            {% empty %}
+            <tr>
+                <td colspan="6" class="empty-row">No appointments found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

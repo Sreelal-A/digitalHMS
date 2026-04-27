@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🏥 HMS Admin Login</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(180deg,#c7d8f5 0%, #a9c3eb 60%, #ffffff 100%);
+}
+
+/* Login Card */
+.login-card{
+    background:#ffffff;
+    width:360px;
+    padding:45px 35px;
+    border-radius:18px;
+    box-shadow:0 25px 60px rgba(0,0,0,0.08);
+    text-align:center;
+    position:relative;
+}
+
+/* Logo */
+.logo-circle{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:#e7efff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 18px auto;
+    font-size:26px;
+    font-weight:600;
+    color:#2f5db3;
+}
+
+/* Heading */
+.login-card h2{
+    font-size:20px;
+    color:#111827;
+    margin-bottom:25px;
+    font-weight:600;
+}
+
+/* Inputs */
+.login-card input{
+    width:100%;
+    padding:12px 14px;
+    margin-bottom:15px;
+    border-radius:10px;
+    border:1px solid #d1d5db;
+    font-size:14px;
+    transition:0.3s;
+}
+
+.login-card input:focus{
+    outline:none;
+    border-color:#4c79ff;
+    box-shadow:0 0 0 3px rgba(76,121,255,0.15);
+}
+
+/* Button */
+.login-card button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    background:linear-gradient(135deg,#4c79ff,#3b5bdb);
+    color:#fff;
+    transition:0.3s ease;
+}
+
+.login-card button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 20px rgba(76,121,255,0.35);
+}
+
+/* Links */
+.links{
+    margin-top:18px;
+}
+
+.links a{
+    text-decoration:none;
+    font-size:14px;
+    color:#2f5db3;
+    font-weight:500;
+}
+
+/* Footer */
+.footer{
+    margin-top:20px;
+    font-size:12px;
+    color:#6b7280;
+}
+
+/* Error */
+.error{
+    background:#fee2e2;
+    color:#b91c1c;
+    padding:8px 10px;
+    border-radius:8px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+/* Toast */
+.toast-container{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform:translateX(-50%);
+    z-index:9999;
+}
+
+.toast{
+    background:#1f2937;
+    color:#fff;
+    padding:14px 22px;
+    border-radius:10px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.3);
+    font-size:14px;
+    animation:slideDown 0.4s ease;
+}
+
+.toast.success{
+    border-left:5px solid #22c55e;
+}
+
+.toast.error{
+    border-left:5px solid #ef4444;
+}
+
+@keyframes slideDown{
+    from{opacity:0; transform:translateY(-10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+{% if messages %}
+<div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+setTimeout(() => {
+    const toast = document.querySelector('.toast-container');
+    if (toast) toast.remove();
+}, 3000);
+</script>
+
+<div class="login-card">
+
+    <div class="logo-circle">🏥</div>
+    <h2>HMS Admin Login</h2>
+
+    <form method="post" action="{% url 'admin_login' %}">
+        {% csrf_token %}
+        
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <div class="links">
+        <a href="{% url 'hms_home' %}">← Back to Home</a>
+    </div>
+
+    <div class="footer">Authorized Personnel Only</div>
+
+</div>
+
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+</html>

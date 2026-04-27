@@ -1,0 +1,63 @@
+{% extends "patientHome.html" %}
+{% block content %}
+
+<style>
+.wrap{ padding:40px; }
+.panel{
+  max-width:980px; margin:0 auto;
+  background:#fff; border-radius:18px;
+  padding:22px; box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+.panel h2{ font-size:20px; margin-bottom:14px; color:#111827; }
+table{ width:100%; border-collapse:collapse; font-size:14px; }
+th,td{ padding:12px; border-bottom:1px solid #eef2f7; text-align:left; }
+thead th{ background:#f4f8ff; color:#374151; font-weight:700; }
+.actions a{
+  display:inline-block; padding:8px 12px; border-radius:10px; text-decoration:none;
+  font-weight:700; font-size:13px; margin-right:8px;
+}
+.btn-res{ background:#eaf2ff; color:#2f5db3; }
+.btn-can{ background:#ffecec; color:#b91c1c; }
+.empty{ padding:14px; color:#6b7280; text-align:center; }
+</style>
+
+<div class="content">
+  <div class="wrap">
+    <div class="panel">
+      <h2>My Appointments</h2>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Token</th>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for a in appointments %}
+          <tr>
+            <td>{{ a.Date }}</td>
+            <td>{{ a.Appointment_time|time:"h:i A" }}</td>
+            <td>{{ a.Token_number }}</td>
+            <td>{{ a.DoctorData.Doctor_name }}</td>
+            <td>{{ a.PatientData.Patient_name }}</td>
+            <td class="actions">
+              <a class="btn-res" href="{% url 'patient_reschedule_appointment' a.id %}">Reschedule</a>
+              <a class="btn-can" href="{% url 'patient_cancel_appointment' a.id %}">Cancel</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="empty">No appointments found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

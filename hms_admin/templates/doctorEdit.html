@@ -1,0 +1,232 @@
+{% extends "adminHome.html" %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Update Doctor Details</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f8fc;
+        }
+
+        .form-card {
+            width: 380px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 22px 26px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-card h2 {
+            text-align: center;
+            color: #0f4c75;
+            margin-bottom: 18px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #0f4c75;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #dbeafe;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4aa3df;
+            box-shadow: 0 0 4px rgba(74, 163, 223, 0.4);
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 14px;
+            padding: 10px;
+            background-color: #4aa3df;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #0f4c75;
+        }
+         /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-card">
+    <h2>Update Doctor Details</h2>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form method="post" id="doctorEditForm" novalidate>
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" id="doc_name"
+               value="{{ doctor.Doctor_name }}" required>
+        <div style="color:#ef4444;font-size:11px;margin-top:3px;display:none" id="err_name">
+            Name must contain only letters and spaces (min 2 characters).
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" id="password"
+               placeholder="At least 8 characters" required>
+        <div style="color:#ef4444;font-size:11px;margin-top:3px;display:none" id="err_password">
+            Password must be at least 8 characters.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Confirm Password</label>
+        <input type="password" id="confirm_password" placeholder="Re-enter password" required>
+        <div style="color:#ef4444;font-size:11px;margin-top:3px;display:none" id="err_confirm">
+            Passwords do not match.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" name="phone" id="phone"
+               placeholder="10-digit number"
+               value="{{ doctor.Doctor_phone }}"
+               maxlength="10" required>
+        <div style="color:#ef4444;font-size:11px;margin-top:3px;display:none" id="err_phone">
+            Enter a valid 10-digit phone number.
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>Department</label>
+        <select name="department" required>
+            <option value="">-- Select Department --</option>
+            <option value="Cardiology"       {% if doctor.Doctor_department == "Cardiology" %}selected{% endif %}>Cardiology</option>
+            <option value="Neurology"        {% if doctor.Doctor_department == "Neurology" %}selected{% endif %}>Neurology</option>
+            <option value="Orthopedics"      {% if doctor.Doctor_department == "Orthopedics" %}selected{% endif %}>Orthopedics</option>
+            <option value="Pediatrics"       {% if doctor.Doctor_department == "Pediatrics" %}selected{% endif %}>Pediatrics</option>
+            <option value="Dermatology"      {% if doctor.Doctor_department == "Dermatology" %}selected{% endif %}>Dermatology</option>
+            <option value="General Medicine" {% if doctor.Doctor_department == "General Medicine" %}selected{% endif %}>General Medicine</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Availability</label>
+        <select name="availability_status" required>
+            <option value="Available"   {% if doctor.availability_status == "Available" %}selected{% endif %}>Available</option>
+            <option value="Unavailable" {% if doctor.availability_status == "Unavailable" %}selected{% endif %}>Unavailable</option>
+            <option value="On Leave"    {% if doctor.availability_status == "On Leave" %}selected{% endif %}>On Leave</option>
+        </select>
+    </div>
+
+    <button type="submit" class="submit-btn">Update</button>
+</form>
+</div>
+
+</body>
+<script>
+    setTimeout(() => {
+        const toast = document.querySelector('.toast-container');
+        if (toast) toast.remove();
+    }, 3000);
+
+    document.getElementById('phone').addEventListener('input', function () {
+        this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+    });
+
+    document.getElementById('doctorEditForm').addEventListener('submit', function (e) {
+        let valid = true;
+        const name = document.getElementById('doc_name');
+        const password = document.getElementById('password');
+        const confirm = document.getElementById('confirm_password');
+        const phone = document.getElementById('phone');
+
+        if (!/^[A-Za-z ]{2,}$/.test(name.value.trim())) {
+            document.getElementById('err_name').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_name').style.display = 'none'; }
+
+        if (password.value.length < 8) {
+            document.getElementById('err_password').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_password').style.display = 'none'; }
+
+        if (password.value !== confirm.value) {
+            document.getElementById('err_confirm').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_confirm').style.display = 'none'; }
+
+        if (!/^[0-9]{10}$/.test(phone.value)) {
+            document.getElementById('err_phone').style.display = 'block'; valid = false;
+        } else { document.getElementById('err_phone').style.display = 'none'; }
+
+        if (!valid) e.preventDefault();
+    });
+</script>
+
+</html>
+
+
+
+{% endblock %}
+
+
+

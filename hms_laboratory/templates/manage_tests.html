@@ -1,0 +1,137 @@
+{% extends 'laboratoryHome.html' %}
+{% block content %}
+<style>
+.page-wrap{ width:95%; max-width:1100px; margin:28px auto; }
+.card{ background:#fff; border-radius:18px; padding:26px; box-shadow:0 14px 40px rgba(0,0,0,0.08); }
+.title{ font-size:20px; font-weight:800; color:#1f2d3d; margin-bottom:18px; }
+.form-row{ display:grid; grid-template-columns: 2fr 1fr auto; gap:14px; align-items:end; margin-bottom:18px; }
+label{ font-size:13px; font-weight:700; color:#475569; display:block; margin-bottom:6px; }
+input{ width:100%; padding:12px 14px; border:1px solid #e5e7eb; border-radius:12px; outline:none; }
+.btn{ border:none; padding:12px 16px; border-radius:12px; background:linear-gradient(135deg,#4c79ff,#3b5bdb); color:#fff; font-weight:800; cursor:pointer; }
+.table{ width:100%; border-collapse:collapse; margin-top:10px; font-size:14px; }
+.table thead th{ text-align:left; padding:12px; background:#f4f8ff; color:#374151; font-weight:800; }
+.table tbody td{ padding:12px; border-top:1px solid #eef2f7; }
+.del{ background:#ffecec; color:#b91c1c; padding:8px 12px; border-radius:10px; text-decoration:none; font-weight:800; font-size:13px; }
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+<div class="page-wrap">
+  <div class="card">
+    <div class="title">Laboratory Test Master</div>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-row">
+        <div>
+          <label>Test Name</label>
+          <input type="text" name="test_name" id="test_name" required autocomplete="off">
+          <div style="color:#ef4444;font-size:12px;margin-top:4px;display:none" id="err_test">
+              This test already exists.
+          </div>
+        </div>
+        <div>
+          <label>Price (₹)</label>
+          <input type="number" name="price" step="0.01" min="0" required>
+        </div>
+        <button class="btn" type="submit">Add Test</button>
+      </div>
+    </form>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Price</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tests %}
+        <tr>
+          <td><b>{{ t.Test_name }}</b></td>
+          <td>₹ {{ t.Price }}</td>
+          <td><form method="post" action="{% url 'delete_test' t.id %}" onsubmit="return confirm('Delete this test?')">
+                  {% csrf_token %}
+                  <button type="submit" class="del">Delete</button>
+              </form>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3" style="text-align:center; padding:14px; color:#6b7280;">No tests added yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<script>
+    setTimeout(() => {
+        const toast = document.querySelector('.toast-container');
+        if (toast) toast.remove();
+    }, 3000);
+
+    const raw = document.getElementById('existing-tests-data').dataset.tests;
+const existingTests = JSON.parse(raw);
+
+function normalize(str) {
+    return str.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+document.getElementById('test_name').addEventListener('input', function () {
+    const val = normalize(this.value);
+    const err = document.getElementById('err_test');
+    if (val && existingTests.map(normalize).includes(val)) {
+        err.style.display = 'block';
+    } else {
+        err.style.display = 'none';
+    }
+});
+
+document.querySelector('form').addEventListener('submit', function (e) {
+    const val = normalize(document.getElementById('test_name').value);
+    if (existingTests.map(normalize).includes(val)) {
+        document.getElementById('err_test').style.display = 'block';
+        e.preventDefault();
+    }
+});
+</script>
+
+{% endblock %}

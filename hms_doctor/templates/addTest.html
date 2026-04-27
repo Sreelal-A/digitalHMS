@@ -1,0 +1,288 @@
+{% extends 'doctorHome.html' %}
+{% block content %}
+   
+   
+   <style>
+            .container {
+                width: 480px;
+                margin: 40px auto;
+            }
+
+            h2 {
+                text-align: center;
+                color: #2c3e50;
+                margin-bottom: 25px;
+            }
+
+            form {
+                background: #ffffff;
+                padding: 20px 25px;
+                border-radius: 14px;
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+                width: 100%;
+                max-height: 90vh;              /* prevent overflow */
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* Selected Tests */
+            .selected-tests {
+                margin-bottom: 20px;
+                padding: 12px;
+                border-radius: 10px;
+                border: 1px solid #d6e4ff;
+                background: #f4f8ff;
+                min-height: 60px;
+            }
+
+            .selected-tests strong {
+                display: block;
+                margin-bottom: 6px;
+                font-size: 14px;
+                color: #2c3e50;
+            }
+
+            .selected-tag {
+                display: inline-block;
+                background: #4a90e2;
+                color: white;
+                padding: 6px 12px;
+                margin: 6px 6px 0 0;
+                border-radius: 20px;
+                font-size: 13px;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            .selected-tag:hover {
+                background: #357abd;
+                transform: scale(1.05);
+            }
+
+            /* Search */
+            .search-box {
+                margin-bottom: 12px;
+            }
+
+            .search-box label {
+                font-weight: 600;
+                font-size: 14px;
+                color: #34495e;
+            }
+
+            #testSearch {
+                width: 100%;
+                padding: 9px 10px;
+                margin-top: 6px;
+                border-radius: 8px;
+                border: 1px solid #ccd6e0;
+                outline: none;
+                transition: 0.3s;
+            }
+
+            #testSearch:focus {
+                border-color: #4a90e2;
+                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+            }
+
+            /* Test List */
+            .test-list {
+                border: 1px solid #e1e8f0;
+                max-height: 200px;  /* adjusted */
+                overflow-y: auto;
+                border-radius: 10px;
+                padding: 10px 12px;
+                background: #fafcff;
+            }
+
+            .test-item {
+                padding: 8px 10px;
+                margin: 4px 0;
+                font-size: 14px;
+                border-radius: 8px;
+                transition: 0.2s;
+            }
+
+            .test-item:hover {
+                background: #eaf2ff;
+                padding-left: 14px;
+            }
+
+            /* Notes */
+            textarea {
+                width: 100%;
+                padding: 9px 10px;
+                border-radius: 8px;
+                border: 1px solid #ccd6e0;
+                margin-top: 6px;
+                resize: none;
+                outline: none;
+                transition: 0.3s;
+            }
+
+            textarea:focus {
+                border-color: #4a90e2;
+                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+            }
+
+            /* Button */
+            button {
+                width: 100%;
+                padding: 12px;
+                margin-top: 20px;
+                border: none;
+                border-radius: 10px;
+                background: #4a90e2;
+                color: white;
+                font-weight: 600;
+                font-size: 14px;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            button:hover {
+                background: #357abd;
+                transform: translateY(-1px);
+            }
+
+            /* Scrollbar */
+            .test-list::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .test-list::-webkit-scrollbar-thumb {
+                background: #c5d4f2;
+                border-radius: 10px;
+            }
+
+            .test-list::-webkit-scrollbar-thumb:hover {
+                background: #9fbaf0;
+            }
+             /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        </style>
+
+        <script>
+            let selectedTests = [];
+
+            function filterTests() {
+                let input = document.getElementById("testSearch").value.toLowerCase();
+                let items = document.getElementsByClassName("test-item");
+                for (let i = 0; i < items.length; i++) {
+                    let label = items[i].innerText.toLowerCase();
+                    items[i].style.display = label.includes(input) ? "" : "none";
+                }
+            }
+
+            function toggleTest(testName) {
+                if (selectedTests.includes(testName)) {
+                    selectedTests = selectedTests.filter(t => t !== testName);
+                } else {
+                    selectedTests.push(testName);
+                }
+                renderSelected();
+            }
+
+            function renderSelected() {
+                let container = document.getElementById("selectedTests");
+                container.innerHTML = "<strong>Selected Tests:</strong>";
+                selectedTests.forEach(test => {
+                    let tag = document.createElement("div");
+                    tag.className = "selected-tag";
+                    tag.innerText = test + " ✕";
+                    tag.onclick = () => toggleTest(test);
+                    container.appendChild(tag);
+
+                    let hidden = document.createElement("input");
+                    hidden.type = "hidden";
+                    hidden.name = "tests[]";
+                    hidden.value = test;
+                    container.appendChild(hidden);
+                });
+            }
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();}, 3000);
+        </script>
+
+
+    <body>
+        <div class="container">
+            {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+            <form class="form-card" method="POST" action="{% url 'addTest' appointment.id %}">
+                <h2>Assign Tests for {{ appointment.PatientData.Patient_name }}</h2>
+
+                {% csrf_token %}
+
+                <div class="selected-tests" id="selectedTests">
+                    <strong>Selected Tests:</strong>
+                </div>
+
+                <div class="search-box">
+                    <label for="testSearch">Search Test:</label>
+                    <input type="text" id="testSearch" placeholder="Type to search..." onkeyup="filterTests()">
+                </div>
+
+                <div class="test-list">
+                {% for t in test_master_list %}
+                    <div class="test-item" onclick="toggleTest('{{ t.Test_name|escapejs }}')">
+                    {{ t.Test_name }} <span style="float:right; font-weight:700; color:#2c7be5;">₹ {{ t.Price }}</span>
+                    </div>
+                {% empty %}
+                    <div style="color:#6b7280; padding:10px;">No tests available. Add tests from Lab module.</div>
+                {% endfor %}
+                </div>
+
+            <!-- Notes -->
+            <label for="notes">Notes:</label><br>
+            <textarea name="notes" id="notes" rows="4" placeholder="Any special instructions"></textarea>
+            <br><br>
+
+            <!-- Submit -->
+            <button type="submit">Assign Selected Tests</button>
+            <a href="{% url 'create_prescription' appointment.id %}" 
+            style="display:block; text-align:center; margin-top:14px; font-size:14px; color:#4a90e2; text-decoration:none;">
+                ← Back to Prescription
+            </a>
+        </form>
+    </body>
+{% endblock %}
+
+

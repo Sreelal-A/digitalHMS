@@ -1,0 +1,339 @@
+{% extends "doctorHome.html" %}
+{% block content %}
+
+<style>
+body {
+    background: #f2f4f8;
+    font-family: 'Times New Roman', serif;
+}
+
+/* Prescription Paper */
+.prescription-sheet {
+    max-width: 800px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 50px 50px 60px 50px;
+    border: 1px solid #000;
+
+    /* ✅ keeps buttons at bottom when content is short */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* content area grows */
+.sheet-content{
+    flex: 1;
+}
+
+/* Hospital Header */
+.hospital-header {
+    text-align: center;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+.hospital-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.hospital-header p {
+    margin: 3px 0;
+    font-size: 13px;
+}
+
+/* Patient Info */
+.patient-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 40px;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.patient-info div {
+    padding: 4px 0;
+}
+
+.patient-info strong {
+    font-weight: 600;
+}
+
+/* Section Title */
+.section-title {
+    margin-top: 25px;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    position: relative;
+    padding-left: 15px;
+}
+
+.section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 4px;
+    height: 14px;
+    width: 4px;
+    background: #000;
+}
+
+/* Tables */
+.prescription-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+    font-size: 14px;
+}
+
+.prescription-table th,
+.prescription-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+}
+
+.prescription-table th {
+    background: #f0f0f0;
+    font-weight: bold;
+}
+
+.prescription-table td:first-child {
+    text-align: left;
+    padding-left: 12px;
+}
+
+/* Notes Section */
+.notes {
+    margin-top: 10px;
+    font-size: 14px;
+    line-height: 1.8;
+    min-height: 60px;
+}
+
+/* ===== Bottom Actions (Print + Edit) ===== */
+.bottom-actions{
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px dashed #000;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+/* Buttons */
+.btn-edit-prescription{
+    background: linear-gradient(135deg, #b91c1c, #7f1d1d); /* dull red */
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 8px 20px rgba(127, 29, 29, 0.25);
+    transition: 0.25s ease;
+}
+
+.btn-edit-prescription:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(127, 29, 29, 0.35);
+}
+
+.btn-print-prescription{
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 8px 20px rgba(22,163,74,0.25);
+    transition: 0.25s ease;
+}
+.btn-print-prescription:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(22,163,74,0.35);
+}
+
+/* Toast */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    left: 55%;
+    transform: translateX(-50%);
+    z-index: 9999;
+}
+.toast {
+    background: #1f2937;
+    color: #fff;
+    padding: 14px 22px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    font-size: 14px;
+    animation: slideDown 0.4s ease;
+}
+.toast.success { border-left: 5px solid #22c55e; }
+.toast.error { border-left: 5px solid #ef4444; }
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Print Optimization */
+@media print {
+    /* Hide everything in the base layout */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Show only the prescription sheet */
+    .prescription-sheet,
+    .prescription-sheet * {
+        visibility: visible;
+    }
+
+    .prescription-sheet {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border: none;
+        margin: 0;
+        padding: 40px;
+        box-shadow: none;
+    }
+
+    /* Hide buttons and toasts */
+    .bottom-actions,
+    .toast-container {
+        display: none !important;
+    }
+}
+</style>
+
+<div class="prescription-sheet">
+
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+        <div class="toast {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- ✅ Everything above buttons -->
+    <div class="sheet-content">
+
+        <!-- Hospital Header -->
+        <div class="hospital-header">
+            <h2>ABC HOSPITAL</h2>
+            <p>Address Line, City, Phone: 1234567890</p>
+            <p><strong>Medical Prescription</strong></p>
+        </div>
+
+        <!-- Patient Details -->
+        <div class="patient-info">
+            <div><strong>Patient Name:</strong> {{ appointment.PatientData.Patient_name }}</div>
+            <div><strong>Age / Gender:</strong> {{ appointment.PatientData.Patient_age }} / {{ appointment.PatientData.Patient_gender }}</div>
+            <div><strong>Doctor:</strong> {{ prescription.Appointment.DoctorData.Doctor_name }}</div>
+            <div><strong>Date:</strong> {{ prescription.Appointment.Date }}</div>
+            <div><strong>Diagnosis:</strong> {{ prescription.Diagnosis }}</div>
+            <div><strong>Duration:</strong> {{ prescription.Duration }} days</div>
+        </div>
+
+        <!-- Medicines -->
+        <div class="section-title">Prescribed Medicines</div>
+        <table class="prescription-table">
+            <thead>
+                <tr>
+                    <th>Medicine</th>
+                    <th>Morning</th>
+                    <th>Afternoon</th>
+                    <th>Night</th>
+                    <th>Instructions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for med in prescription.medicines.all %}
+                <tr>
+                    <td>{{ med.Medicine.Medicine_name }}</td>
+                    <td>{{ med.Morning|yesno:"✔,—" }}</td>
+                    <td>{{ med.Afternoon|yesno:"✔,—" }}</td>
+                    <td>{{ med.Night|yesno:"✔,—" }}</td>
+                    <td>{{ med.Instructions }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No medicines prescribed.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Assigned Tests -->
+        <div class="section-title">Assigned Tests</div>
+        <table class="prescription-table">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Test Name</th>
+                    <th>Notes</th>
+                    <th>Status</th>
+                    <th>Assigned On</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for test in tests %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ test.Test_name }}</td>
+                    <td>{{ test.Notes|default:"—" }}</td>
+                    <td>{{ test.Test_status }}</td>
+                    <td>{{ test.Created_at|date:"d M Y, H:i" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5">No tests assigned.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Notes -->
+        <div class="section-title">Additional Notes</div>
+        <div class="notes">{{ prescription.Notes }}</div>
+
+    </div>
+
+    <!-- ✅ Buttons at bottom of prescription -->
+    <div class="bottom-actions">
+        <button type="button" onclick="window.print()" class="btn-print-prescription">
+            🖨 Print
+        </button>
+
+        <a href="{% url 'PTedit' prescription.id %}" class="btn-edit-prescription">
+            ✏️ Edit Prescription
+        </a>
+    </div>
+
+</div>
+
+<script>
+setTimeout(() => {
+    const toast = document.querySelector('.toast-container');
+    if (toast) toast.remove();
+}, 3000);
+</script>
+
+{% endblock %}

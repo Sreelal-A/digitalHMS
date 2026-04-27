@@ -1,0 +1,198 @@
+{% extends 'doctorHome.html' %}
+{% block content %}
+<style>
+/* Page safety */
+body {
+    overflow-x: hidden;
+    background: #f4f8fc;
+}
+
+/* Card */
+.table-card {
+    width: 98%;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;   /* Allows horizontal scroll if needed */
+}
+
+/* Title */
+.table-title {
+    margin-bottom: 15px;
+}
+
+.table-title h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #003366;
+}
+
+/* Table */
+.appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.appointment-table thead tr {
+    background: #e6f2ff;
+}
+
+.appointment-table th {
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #003366;
+    text-align: center;
+}
+
+.appointment-table td {
+    padding: 10px;
+    font-size: 13px;
+    text-align: center;
+    border-top: 1px solid #e3eef9;
+}
+
+.appointment-table tbody tr:hover {
+    background: #f4f9ff;
+}
+
+/* Buttons */
+.action-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    margin: 2px;
+}
+
+.action-btn.view {
+    background: #cfe2ff;
+    color: #084298;
+}
+
+.btn-test {
+    background: #1f6fb2;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .appointment-table th,
+    .appointment-table td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .table-title h3 {
+        font-size: 16px;
+    }
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+<div class="table-card">
+  {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <div class="table-title">
+        <h3>Appointments for Dr. {{ doctor.Doctor_name }}</h3>
+    </div>
+
+    <table class="appointment-table">
+        <thead>
+            <tr>
+                <th>Patient Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Date</th>
+                <th>Token</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for appointment in appointments %}
+            <tr>
+                <td>{{ appointment.PatientData.Patient_name }}</td>
+                <td>{{ appointment.PatientData.Patient_age }}</td>
+                <td>{{ appointment.PatientData.Patient_gender }}</td>
+                <td>{{ appointment.PatientData.Patient_phone }}</td>
+                <td>{{ appointment.Date }}</td>
+                <td>{{ appointment.Token_number }}</td>
+                <td>{{ appointment.Prescription_status }}</td>
+                <td>
+                {% if appointment.Prescription_status == "Pending" %}
+                    <a href="{% url 'create_prescription' appointment.id %}">
+                        <button class="action-btn view">Issue Prescription</button>
+                    </a>
+                {% elif appointment.Prescription_status == "Complete" or appointment.Prescription_status == "Completed" %}
+                    <a href="{% url 'prescriptionFetch' appointment.id %}">
+                        <button class="action-btn view">View Prescription</button>
+                    </a>
+                {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="empty-row">No appointments found.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

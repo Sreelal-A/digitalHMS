@@ -1,0 +1,181 @@
+{% extends "adminHome.html" %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hospital Staff Registration</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f8fc;
+        }
+
+        /* Form card */
+        .form-card {
+            width: 360px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 22px 24px;
+            border-radius: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-card h2 {
+            text-align: center;
+            color: #0f4c75;
+            margin-bottom: 18px;
+            font-size: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 600;
+            color: #0f4c75;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #dbeafe;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4aa3df;
+            box-shadow: 0 0 4px rgba(74, 163, 223, 0.4);
+        }
+
+        .submit-btn {
+            width: 100%;
+            margin-top: 14px;
+            padding: 10px;
+            background-color: #4aa3df;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background-color: #0f4c75;
+        }
+         /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-card">
+    <h2>Doctor Registration</h2>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form method="post" action="/doctor_save/">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>Name</label>
+            <input type="text" name="name" pattern="[A-Za-z ]{2,}" title="Name must contain only letters and spaces (min 2 characters)" required>
+        </div>
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" name="username" required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" minlength="8" placeholder="At least 8 characters" title="Password must be at least 8 characters" required>
+        </div>
+
+        <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" pattern="[0-9]{10}" placeholder="10-digit number" title="Enter a valid 10-digit phone number" required>
+        </div>
+
+        <div class="form-group">
+            <label>Department</label>
+            <select name="department" required>
+                <option value="">-- Select Department --</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Neurology">Neurology</option>
+                <option value="Orthopedics">Orthopedics</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="Dermatology">Dermatology</option>
+                <option value="General Medicine">General Medicine</option>
+            </select>
+        </div>
+        <!-- <div class="form-group">
+            <label>availability</label>
+            <select name="availability_status" required>
+                <option value="">-- select --</option>
+                <option value="Available">Available</option>
+                <option value="Unavailable">Unavailable</option>
+                <option value="On leave">On Leave</option>
+            </select>
+        </div> -->
+        <button type="submit" class="submit-btn">Submit</button>
+    </form>
+</div>
+
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+</html>
+
+
+
+
+{% endblock %}

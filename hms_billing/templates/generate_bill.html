@@ -1,0 +1,242 @@
+{% extends 'billingHome.html' %}
+{% block content %}
+
+<style>
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+    margin-bottom:18px;
+}
+
+h2{margin:0 0 10px}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+th{
+    background:#f3f6ff;
+    text-align:left;
+}
+
+input[type="number"]{
+    padding:10px 12px;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    width:180px;
+    font-weight:700;
+}
+
+input[type="checkbox"]{
+    width:16px;
+    height:16px;
+    cursor:pointer;
+}
+
+button{
+    background:#3b5bdb;
+    color:#fff;
+    border:none;
+    padding:10px 16px;
+    border-radius:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+button:hover{ background:#2f4bbd; }
+
+.small{
+    color:#6b7280;
+    font-size:13px;
+}
+
+.warn{
+    color:#ef4444;
+    font-weight:700;
+}
+
+.tools{
+    display:flex;
+    gap:10px;
+    margin:10px 0 0;
+}
+
+.tools .mini{
+    padding:7px 10px;
+    font-size:12px;
+    border-radius:10px;
+    font-weight:800;
+    background:#111827;
+}
+
+.tools .mini:hover{ background:#0b1220; }
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+
+<div class="content">
+
+<div class="card">
+  <h2>💳 Generate Bill</h2>
+  {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+  <div class="small">
+    Patient: <b>{{ appointment.PatientData.Patient_name }}</b> |
+    Doctor: <b>{{ appointment.DoctorData.Doctor_name }}</b> |
+    Date: <b>{{ appointment.Date }}</b>
+  </div>
+</div>
+
+<form method="POST">
+{% csrf_token %}
+
+<div class="card">
+  <h3>Doctor Fee</h3>
+  <input type="number" step="0.01" name="doctor_fee" value="0" required>
+</div>
+
+<div class="card">
+  <h3>🧪 Tests</h3>
+
+  <div class="tools">
+    <button type="button" class="mini" onclick="toggleChecks('test-check', true)">Select All</button>
+    <button type="button" class="mini" onclick="toggleChecks('test-check', false)">Select None</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:80px;">Include</th>
+        <th>Test</th>
+        <th>Price</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for t in test_lines %}
+      <tr>
+        <td>
+          <input class="test-check" type="checkbox" name="include_tests" value="{{ t.assigned_id }}" checked>
+        </td>
+        <td>{{ t.name }}</td>
+        <td>₹ {{ t.price }}</td>
+        <td>
+          {% if t.found_in_master %}
+            ✅ priced
+          {% else %}
+            <span class="warn">⚠ not found in Test_master</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4">No tests assigned.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>💊 Medicines</h3>
+
+  <div class="tools">
+    <button type="button" class="mini" onclick="toggleChecks('med-check', true)">Select All</button>
+    <button type="button" class="mini" onclick="toggleChecks('med-check', false)">Select None</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:80px;">Include</th>
+        <th>Medicine</th>
+        <th>₹/piece</th>
+        <th>Days</th>
+        <th>Times/Day</th>
+        <th>Qty</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for m in med_lines %}
+      <tr>
+        <td>
+          <input class="med-check" type="checkbox" name="include_meds" value="{{ m.presc_med_id }}" checked>
+        </td>
+        <td>{{ m.name }}</td>
+        <td>₹ {{ m.price_per_piece }}</td>
+        <td>{{ m.duration }}</td>
+        <td>{{ m.times_per_day }}</td>
+        <td>{{ m.quantity }}</td>
+        <td>₹ {{ m.total }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7">No medicines in prescription.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <button type="submit">✅ Confirm & Generate Bill</button>
+</div>
+
+</form>
+</div>
+
+<script>
+function toggleChecks(className, state){
+  document.querySelectorAll('.' + className).forEach(cb => cb.checked = state);
+}
+      setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+
+{% endblock %}

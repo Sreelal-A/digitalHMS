@@ -1,0 +1,103 @@
+{% extends "adminHome.html" %}
+{% block content %}
+
+<style>
+.page-wrapper{
+    width:95%;
+    margin:30px auto;
+    font-family:Inter,sans-serif;
+}
+.header{
+    background:linear-gradient(135deg,#5b7cff,#7c5cff);
+    padding:18px 22px;
+    border-radius:18px;
+    color:white;
+    font-weight:800;
+    font-size:20px;
+    box-shadow:0 10px 25px rgba(99,102,241,.25);
+    margin-bottom:20px;
+}
+.card{
+    background:#fff;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+}
+.table-wrap{
+    overflow-x:auto;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+th, td{
+    padding:12px 14px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+th{
+    background:#f3f6ff;
+    color:#1e293b;
+}
+tr:hover{
+    background:#f9fbff;
+}
+.badge{
+    display:inline-block;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:12px;
+    font-weight:600;
+    background:#ecfdf5;
+    color:#15803d;
+}
+.empty{
+    text-align:center;
+    padding:20px;
+    color:#64748b;
+}
+</style>
+
+<div class="page-wrapper">
+    <div class="header">Completed Bills</div>
+
+    <div class="card">
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Bill ID</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Appointment Date</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bill in completed_bills %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ bill.id }}</td>
+                        <td>{{ bill.appointment.PatientData.Patient_name }}</td>
+                        <td>{{ bill.appointment.DoctorData.Doctor_name }}</td>
+                        <td>{{ bill.appointment.Date }}</td>
+                        <td>₹ {{ bill.total_amount }}</td>
+                        <td><span class="badge">{{ bill.status }}</span></td>
+                        <td>{{ bill.created_at }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="empty">No completed bills found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

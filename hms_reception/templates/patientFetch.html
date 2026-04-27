@@ -1,0 +1,174 @@
+{% extends 'receptionHome.html' %}
+{% block content %}
+<style>
+    /* Card */
+.table-card {
+    width: fit-content;
+    max-width: 95%;
+    margin: 30px auto;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Title */
+.table-title {
+    margin-bottom: 10px;
+}
+
+.table-title h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #003366;
+}
+
+/* Table */
+.patient-table {
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+.patient-table thead tr {
+    background: #e6f2ff;
+}
+
+.patient-table th {
+    padding: 10px 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #003366;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.patient-table td {
+    padding: 9px 14px;
+    font-size: 14px;
+    text-align: center;
+    border-top: 1px solid #e3eef9;
+    white-space: nowrap;
+}
+
+.patient-table tbody tr:hover {
+    background: #f4f9ff;
+}
+
+/* Action buttons */
+.action-cell {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.action-btn {
+    padding: 5px 12px;
+    font-size: 13px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.action-btn.delete {
+    background: #f8d7da;
+    color: #842029;
+}
+
+.action-btn.edit {
+    background: #cfe2ff;
+    color: #084298;
+}
+ /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+</style>
+<body>
+    <div class="table-card">
+
+    <div class="table-title">
+        <h3>Patient Details</h3>
+        {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    </div>
+
+    <table class="patient-table">
+        <thead>
+            <tr>
+                <th>S No</th>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for patient in patients %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ patient.Patient_name }}</td>
+                <td>{{ patient.Patient_age }}</td>
+                <td>{{ patient.Patient_gender }}</td>
+                <td>{{ patient.Patient_phone }}</td>
+                <td>{{ patient.Patient_address }}</td>
+                <td class="action-cell">
+                    <a href="{% url 'patientDelete' id=patient.id %}">
+                        <button class="action-btn delete">Delete</button>
+                    </a>
+                    <a href="{% url 'patientEdit' id=patient.id %}">
+                        <button class="action-btn edit">Edit</button>
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

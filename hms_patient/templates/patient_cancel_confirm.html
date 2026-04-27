@@ -1,0 +1,49 @@
+{% extends "patientHome.html" %}
+{% block content %}
+
+<style>
+.wrap{ padding:40px; }
+.card{
+  max-width:520px; margin:0 auto;
+  background:#fff; border-radius:18px;
+  padding:28px; box-shadow:0 18px 40px rgba(0,0,0,0.08);
+}
+.card h2{ font-size:20px; margin-bottom:10px; }
+.card p{ color:#6b7280; font-size:13px; margin-bottom:16px; }
+.btnrow{ display:flex; gap:10px; }
+.card button,
+.card a {
+  flex:1;
+  padding:12px 14px;
+  border-radius:12px;
+  border:none;
+  font-weight:800;
+  cursor:pointer;
+  text-decoration:none;
+  text-align:center;
+}
+button{ background:#ef4444; color:#fff; }
+/* a{ background:#eef2f7; color:#111827; } */
+</style>
+
+<div class="content">
+  <div class="wrap">
+    <div class="card">
+      <h2>Cancel Appointment?</h2>
+      <p>
+        Doctor: <b>{{ appointment.DoctorData.Doctor_name }}</b><br>
+        Date: <b>{{ appointment.Date }}</b> | Token: <b>{{ appointment.Token_number }}</b>
+      </p>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div class="btnrow">
+          <button type="submit">Yes, Cancel</button>
+          <a href="{% url 'patient_my_appointments' %}">No, Go Back</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

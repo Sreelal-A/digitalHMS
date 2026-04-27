@@ -1,0 +1,251 @@
+{% extends 'billingHome.html' %}
+{% block content %}
+
+<style>
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 12px 30px rgba(0,0,0,.06);
+    margin-bottom:18px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:14px;
+}
+
+th{
+    background:#f3f6ff;
+    text-align:left;
+}
+
+.total{
+    font-size:20px;
+    font-weight:900;
+}
+
+.print-btn{
+    text-decoration: none;
+    background:#3b5bdb;
+    color:white;
+    border:none;
+    padding:10px 18px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.print-btn:hover{
+    background:#2f4bbd;
+}
+
+@media print {
+
+    .print-btn{
+        display:none;
+    }
+
+    .card{
+        box-shadow:none;
+        border:1px solid #ddd;
+        page-break-inside: avoid;
+    }
+
+    table{
+        font-size:12px;
+    }
+
+    .total{
+        font-size:18px;
+    }
+} /* Message container */
+.toast-container {
+            position: fixed;
+            top: 20px;
+            left: 55%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        } /* Message container */
+
+   @media print {
+    /* Hide everything in the base layout */
+    body * {
+        visibility: hidden;
+    }
+
+    /* Show only the bill content */
+    .content,
+    .content * {
+        visibility: visible;
+    }
+
+    .content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    /* Hide buttons and toasts */
+    .print-btn,
+    .toast-container,
+    form {
+        display: none !important;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+    }
+}
+</style>
+
+<div class="content">
+{% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+<div class="card">
+  <h2>🧾 Bill #{{ bill.id }}</h2>
+  <div style="margin-top:8px;">
+  Status:
+  {% if bill.status == 'COMPLETED' %}
+      <span style="color:#16a34a;font-weight:800;">🟢 Completed</span>
+  {% else %}
+      <span style="color:#f59e0b;font-weight:800;">🟡 Pending</span>
+  {% endif %}
+</div>
+
+  <div>
+    Patient: <b>{{ bill.appointment.PatientData.Patient_name }}</b> |
+    Doctor: <b>{{ bill.appointment.DoctorData.Doctor_name }}</b> |
+    Date: <b>{{ bill.appointment.Date }}</b>
+  </div>
+
+  <div style="margin-top:10px;">
+      Doctor Fee: ₹ {{ bill.doctor_fee }}
+  </div>
+</div>
+
+<div class="card">
+  <h3>Tests</h3>
+  <table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for t in bill.test_items.all %}
+      <tr>
+          <td>{{ t.test_name_snapshot }}</td>
+          <td>₹ {{ t.test_price_snapshot }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="2">No tests</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h3>Medicines</h3>
+  <table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>₹/piece</th>
+            <th>Days</th>
+            <th>Times/day</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% for m in bill.medicine_items.all %}
+      <tr>
+        <td>{{ m.medicine_name_snapshot }}</td>
+        <td>₹ {{ m.price_per_piece_snapshot }}</td>
+        <td>{{ m.duration_days }}</td>
+        <td>{{ m.times_per_day }}</td>
+        <td>{{ m.quantity }}</td>
+        <td>₹ {{ m.total_price }}</td>
+        <td>
+        {% if bill.status == 'COMPLETED' %}
+            <span style="color:#16a34a;font-weight:700;">Completed</span>
+        {% else %}
+            <span style="color:#f59e0b;font-weight:700;">Pending</span>
+        {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No medicines</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <div class="total">Grand Total: ₹ {{ bill.total_amount }}</div>
+</div>
+{% if bill.status == 'PENDING' %}
+<div class="card">
+    <form method="POST" action="{% url 'mark_bill_completed' bill.id %}">
+        {% csrf_token %}
+        <button style="background:#16a34a;">Mark as Completed</button>
+    </form>
+</div>
+{% endif %}
+<div style="margin-bottom:20px;">
+    <button onclick="window.print()" class="print-btn">
+        🖨 Print Invoice
+    </button>
+  
+</div>
+
+</div>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

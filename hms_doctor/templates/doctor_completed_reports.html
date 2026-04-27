@@ -1,0 +1,348 @@
+{% extends "doctorHome.html" %}
+{% block content %}
+
+<style>
+/* ===== Base ===== */
+body{background:#eef2f7;}
+.page-wrapper{
+  width:95%;
+  max-width:1200px;
+  margin:28px auto;
+  font-family:Inter,sans-serif;
+  color:#0f172a;
+}
+
+/* ===== Hero Header (matches your HMS vibe) ===== */
+.header{
+  background: linear-gradient(135deg,blue,blue);
+  padding:18px 22px;
+  border-radius:18px;
+  color:#fff;
+  box-shadow: 0 12px 30px rgba(99,102,241,.22);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.header-title{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.2px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.header-sub{
+  margin-top:4px;
+  font-size:12px;
+  font-weight:600;
+  opacity:.9;
+}
+
+.header-pill{
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.18);
+  padding:10px 14px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  white-space:nowrap;
+}
+
+/* ===== Card ===== */
+.card{
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 14px 34px rgba(2,6,23,.08);
+  overflow:hidden;
+  border:1px solid #eef2ff;
+}
+
+/* ===== Toolbar ===== */
+.toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  padding:16px 16px 14px 16px;
+  border-bottom:1px solid #edf2f7;
+  background: linear-gradient(180deg,#ffffff, #fbfdff);
+}
+
+.toolbar-title{
+  font-weight:900;
+  color:#0f172a;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.toolbar-title .dot{
+  width:10px;height:10px;border-radius:999px;
+  background: linear-gradient(135deg,#60a5fa,#6366f1);
+  box-shadow:0 6px 14px rgba(99,102,241,.22);
+}
+
+/* Search */
+.search-form{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+
+.search-box{
+  position:relative;
+}
+
+.search-input{
+  width:290px;
+  padding:11px 12px 11px 40px;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  font-size:14px;
+  outline:none;
+  transition:.2s;
+  background:#fbfdff;
+}
+
+.search-input:focus{
+  border-color:#93c5fd;
+  box-shadow:0 0 0 4px rgba(59,130,246,.14);
+}
+
+.search-icon{
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:16px;
+  opacity:.55;
+}
+
+/* Buttons */
+.btn{
+  border:none;
+  cursor:pointer;
+  border-radius:14px;
+  padding:11px 14px;
+  font-size:13px;
+  font-weight:900;
+  transition:.18s ease;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  text-decoration:none;
+  white-space:nowrap;
+}
+
+.btn-search{
+  background: linear-gradient(135deg,#2563eb,#4f46e5);
+  color:#fff;
+  box-shadow:0 10px 22px rgba(37,99,235,.18);
+}
+
+.btn-search:hover{transform:translateY(-1px); box-shadow:0 14px 28px rgba(37,99,235,.24);}
+
+.btn-clear{
+  background:#0f172a;
+  color:#fff;
+  opacity:.92;
+  box-shadow:0 10px 22px rgba(2,6,23,.14);
+}
+
+.btn-clear:hover{opacity:1; transform:translateY(-1px);}
+
+/* ===== Table ===== */
+.table-wrap{
+  overflow:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  min-width:920px;
+}
+
+thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  background:#f4f6ff;
+  color:#3730a3;
+  font-weight:900;
+  letter-spacing:.2px;
+  padding:14px 12px;
+  border-bottom:1px solid #e8edff;
+}
+
+tbody td{
+  padding:14px 12px;
+  border-bottom:1px solid #eef2f7;
+  font-size:14px;
+  white-space:nowrap;
+}
+
+tbody tr:nth-child(even) td{background:#fcfdff;}
+tbody tr:hover td{background:#f6f9ff;}
+
+/* Report badge */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+  background:#ecfdf5;
+  color:#047857;
+  border:1px solid #bbf7d0;
+}
+
+.badge::before{
+  content:"";
+  width:8px;height:8px;border-radius:999px;
+  background:#22c55e;
+  box-shadow:0 0 0 4px rgba(34,197,94,.12);
+}
+
+/* View Button */
+.report-btn{
+  padding:9px 14px;
+  border-radius:14px;
+  font-weight:900;
+  background: linear-gradient(135deg,#6366f1,#4f46e5);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  transition:.18s ease;
+  box-shadow:0 10px 22px rgba(99,102,241,.18);
+}
+
+.report-btn:hover{
+  transform:translateY(-1px);
+  box-shadow:0 14px 28px rgba(99,102,241,.24);
+}
+
+.muted{
+  color:#94a3b8;
+  font-weight:700;
+}
+
+/* Empty row */
+.empty-row{
+  text-align:center;
+  color:#64748b;
+  padding:18px;
+  font-weight:700;
+}
+
+/* Responsive */
+@media (max-width: 900px){
+  .toolbar{flex-direction:column; align-items:stretch;}
+  .search-form{justify-content:flex-start;}
+  .search-input{width:100%;}
+  .search-box{flex:1; width:100%;}
+}
+</style>
+
+<div class="page-wrapper">
+
+  <div class="header">
+    <div>
+      <div class="header-title">🧾 Completed Lab Reports</div>
+      <div class="header-sub">Search completed reports by patient name & open the report instantly</div>
+    </div>
+
+    <div class="header-pill">
+      ✅ Total Completed: <span style="font-size:14px;">{{ tests|length }}</span>
+    </div>
+  </div>
+
+  <div class="card">
+
+    <div class="toolbar">
+      <div class="toolbar-title">
+        <span class="dot"></span>
+        Report List
+      </div>
+
+      <form method="GET" class="search-form">
+        <div class="search-box">
+          <span class="search-icon">🔎</span>
+          <input
+            class="search-input"
+            type="text"
+            name="search"
+            placeholder="Type patient name..."
+            value="{{ search }}"
+          >
+        </div>
+
+        <button class="btn btn-search" type="submit">Search</button>
+
+        {% if search %}
+          <a class="btn btn-clear" href="{% url 'doctor_completed_reports' %}">Clear</a>
+        {% endif %}
+      </form>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Age</th>
+            <th>Test</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Report</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for test in tests %}
+          <tr>
+            <td>{{ test.Appointment.PatientData.Patient_name }}</td>
+            <td>{{ test.Appointment.PatientData.Patient_age }}</td>
+            <td>{{ test.Test_name }}</td>
+            <td>{{ test.Appointment.DoctorData.Doctor_name }}</td>
+            <td>{{ test.Created_at|date:"d M Y" }}</td>
+            <td><span class="badge">{{ test.Test_status }}</span></td>
+            <td>
+              {% if test.Report_image %}
+                <a href="{{ test.Report_image.url }}"  style="text-decoration:none;">
+                  <button class="report-btn" type="button">View</button>
+                </a>
+              {% else %}
+                <span class="muted">No Report</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="empty-row">
+              No completed reports found{% if search %} for "<b>{{ search }}</b>"{% endif %}.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

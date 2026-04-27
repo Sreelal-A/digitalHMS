@@ -1,0 +1,57 @@
+{% extends "laboratoryHome.html" %}
+{% block content %}
+
+<style>
+.page-wrapper{width:95%;margin:30px auto;font-family:Inter,sans-serif;}
+.card{background:#fff;padding:25px;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.06);}
+h3{margin:0 0 18px;font-weight:800;color:#102a43}
+table{width:100%;border-collapse:collapse}
+th,td{padding:14px 12px;border-bottom:1px solid #e5e7eb;font-size:14px}
+th{background:#f3f7ff;font-weight:700}
+tr:hover{background:#f9fbff}
+.btn{background:#2563eb;color:#fff;border:none;padding:7px 14px;border-radius:10px;cursor:pointer}
+</style>
+
+<div class="page-wrapper">
+  <div class="card">
+    <h3>Assigned Test Details</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Patient Name</th>
+          <th>Age</th>
+          <th>Test Name</th>
+          <th>Doctor</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for test in tests %}
+        <tr>
+          <td>{{ test.Appointment.PatientData.Patient_name }}</td>
+          <td>{{ test.Appointment.PatientData.Patient_age }}</td>
+          <td>{{ test.Test_name }}</td>
+          <td>{{ test.Appointment.DoctorData.Doctor_name }}</td>
+          <td>{{ test.Created_at|date:"d M Y" }}</td>
+          <td>{{ test.Test_status }}</td>
+          <td>
+            <a href="{% url 'test_detail' test.id %}">
+              <button class="btn">View</button>
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" style="text-align:center;color:#64748b;">No tests found.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

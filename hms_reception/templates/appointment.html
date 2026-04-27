@@ -1,0 +1,156 @@
+{% extends 'receptionHome.html'%}
+{% block content %}
+    <title>Appointment Form</title>
+
+    <style>
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f8fc;
+        }
+
+        /* Card */
+        .form-card {
+            width: 420px;
+            margin: 60px auto;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 20px 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Title */
+        .form-card h3 {
+            margin: 0 0 16px 0;
+            text-align: center;
+            color: #003366;
+            font-weight: 600;
+        }
+
+        /* Labels */
+        label {
+            display: block;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #003366;
+        }
+
+        /* Inputs & Select */
+        select,
+        input[type="date"] {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 6px;
+            border: 1px solid #cfddee;
+            font-size: 14px;
+            outline: none;
+        }
+
+        select:focus,
+        input[type="date"]:focus {
+            border-color: #0d6efd;
+        }
+
+        /* Button */
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            border-radius: 8px;
+            background: #0d6efd;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0b5ed7;
+        }
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .toast {
+            background: #1f2937;
+            color: #fff;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            font-size: 14px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .toast.success {
+            border-left: 5px solid #22c55e;
+        }
+
+        .toast.error {
+            border-left: 5px solid #ef4444;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-card">
+    <h3>Book Appointment</h3>
+    {% if messages %}
+    <div class="toast-container">
+    {% for message in messages %}
+        <div class="toast {{ message.tags }}">
+        {{ message }}
+        </div>
+    {% endfor %}
+    </div>
+    {% endif %}
+    <form action="{% url 'bookAppointment' %}" method="post">
+        {% csrf_token %}
+
+        <!-- Patient Selection -->
+        <label for="patient_name">Patient Name</label>
+        <select name="patient_name" required>
+            <option value="" disabled selected>Select a patient</option>
+            {% for patient in patients %}
+                <option value="{{ patient.id }}">{{ patient.Patient_name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Doctor Selection -->
+        <label for="doctor_name">Doctor Name</label>
+        <select name="doctor_name" required>
+            <option value="" disabled selected>Select a doctor</option>
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.Doctor_name }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Appointment Date -->
+        <label for="date">Date</label>
+        <input type="date" name="date" id="date" required>
+        <script>document.getElementById('date').min = new Date().toISOString().split('T')[0];</script>
+
+        <!-- Submit -->
+        <button type="submit">Book Appointment</button>
+    </form>
+</div>
+
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+{% endblock %}

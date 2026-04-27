@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Hospital Management System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  display:flex;
+  height:100vh;
+  background:#eef2f7;
+  color:#111827;
+}
+
+/* ================= SIDEBAR ================= */
+nav{
+  width:240px;
+  background:#ffffff;
+  display:flex;
+  flex-direction:column;
+  padding:35px 0;
+  box-shadow:8px 0 30px rgba(0,0,0,0.05);
+}
+
+nav a{
+  text-decoration:none;
+  color:#6b7280;
+  padding:15px 32px;
+  font-size:14px;
+  font-weight:500;
+  transition:all 0.3s ease;
+  border-left:3px solid transparent;
+}
+
+nav a:hover{
+  background:#f3f6ff;
+  color:#2f5db3;
+  border-left:3px solid #4c79ff;
+  padding-left:38px;
+}
+
+/* ================= MAIN ================= */
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  overflow:auto;
+}
+
+/* ================= HEADER ================= */
+.header-bar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#ffffff;
+  padding:20px 40px;
+  box-shadow:0 5px 20px rgba(0,0,0,0.04);
+}
+
+.header-left h1{
+  font-size:20px;
+  font-weight:600;
+}
+
+.header-left p{
+  font-size:13px;
+  color:#6b7280;
+  margin-top:5px;
+}
+
+/* Logout Button */
+.logout-btn{
+  padding:8px 18px;
+  border-radius:8px;
+  border:1.5px solid #ef4444;
+  background:#ffffff;
+  color:#ef4444;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s ease;
+}
+
+.logout-btn:hover{
+  background:#ef4444;
+  color:#ffffff;
+}
+
+/* ================= HERO ================= */
+.dashboard-hero{
+  margin:40px;
+  padding:50px 60px;
+  border-radius:20px;
+  background:linear-gradient(135deg,#dbe7ff,#c7d8f5);
+  box-shadow:0 20px 40px rgba(0,0,0,0.06);
+}
+
+.dashboard-content h2{
+  font-size:24px;
+  font-weight:600;
+  margin-bottom:15px;
+}
+
+.dashboard-content p{
+  font-size:14px;
+  color:#374151;
+  margin-bottom:25px;
+  max-width:550px;
+  line-height:1.6;
+}
+
+.dashboard-btn{
+  padding:11px 26px;
+  border:none;
+  border-radius:12px;
+  background:linear-gradient(135deg,#4c79ff,#3b5bdb);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s ease;
+}
+
+.dashboard-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 15px 30px rgba(76,121,255,0.35);
+}
+
+/* ================= CARDS ================= */
+.features{
+  display:flex;
+  gap:30px;
+  padding:40px;
+  flex-wrap:wrap;
+}
+
+.feature{
+  background:#ffffff;
+  padding:30px;
+  border-radius:16px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.06);
+  width:300px;
+  transition:0.3s ease;
+}
+
+.feature:hover{
+  transform:translateY(-8px);
+  box-shadow:0 25px 50px rgba(0,0,0,0.08);
+}
+
+.feature .icon{
+  font-size:28px;
+  margin-bottom:15px;
+}
+
+.feature h2{
+  font-size:16px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.feature p{
+  font-size:13px;
+  color:#6b7280;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+.card-link{
+  text-decoration:none;
+  font-size:13px;
+  font-weight:600;
+  color:#4c79ff;
+}
+
+/* ================= FOOTER ================= */
+footer{
+  margin-top:auto;
+  padding:18px 45px;
+  background:#ffffff;
+  font-size:13px;
+  color:#6b7280;
+  border-top:1px solid #e5e7eb;
+}
+
+/* ================= TOAST ================= */
+.toast-container{
+  position:fixed;
+  top:25px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:9999;
+}
+
+.toast{
+  background:#1f2937;
+  color:#fff;
+  padding:14px 24px;
+  border-radius:12px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.3);
+  font-size:14px;
+}
+
+.toast.success{ border-left:5px solid #22c55e; }
+.toast.error{ border-left:5px solid #ef4444; }
+</style>
+</head>
+
+<body>
+
+<nav>
+  <a href="{% url 'receptionHome' %}">🏠 Home</a>
+  <a href="{% url 'patientDetails' %}">Patient Registration</a>
+  <a href="{% url 'patientFetch' %}">Patient Details</a>
+  <a href="{% url 'doctor_avail' %}">Doctor Availability</a>
+  <a href="{% url 'bookAppointment' %}">Book Appointments</a>
+  <a href="{% url 'appointmentFetch' %}">View Appointments</a>
+</nav>
+
+{% block content %}
+<div class="main">
+
+{% if messages %}
+<div class="toast-container">
+{% for message in messages %}
+<div class="toast {{ message.tags }}">
+{{ message }}
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<header class="header-bar">
+<div class="header-left">
+<h1>Digital Hospital Management System</h1>
+<p>Efficient • Secure • Patient-Centered</p>
+</div>
+<div>
+<form action="{% url 'Logout' %}" method="POST">
+{% csrf_token %}
+<button class="logout-btn">Logout</button>
+</form>
+</div>
+</header>
+
+<section class="dashboard-hero">
+<div class="dashboard-content">
+<h2>Welcome Back 👋</h2>
+<p>Manage hospital operations, monitor staff activity, and oversee system performance from one centralized dashboard.</p>
+<button class="dashboard-btn">Go to Management</button>
+</div>
+</section>
+
+<section class="features">
+
+<div class="feature">
+<div class="icon">📅</div>
+<h2>Appointment Scheduling</h2>
+<p>Book and manage patient appointments with seamless real-time updates.</p>
+<a href="{% url 'appointmentFetch' %}" class="card-link">Manage →</a>
+</div>
+
+<div class="feature">
+<div class="icon">👨‍⚕️</div>
+<h2>Doctor Management</h2>
+<p>Maintain doctor profiles, specialties, and availability with organized scheduling tools.</p>
+<a href="{% url 'doctor_avail' %}" class="card-link">View Doctors →</a>
+</div>
+
+<div class="feature">
+<div class="icon">📊</div>
+<h2>Analytics & Reports</h2>
+<p>Track hospital performance and generate insights to improve operational efficiency.</p>
+<a href="#" class="card-link">View Reports →</a>
+</div>
+
+</section>
+
+<footer>
+<p>&copy; 2026 Digital Hospital Management System | All Rights Reserved</p>
+</footer>
+
+</div>
+{% endblock %}
+
+</body>
+<script>
+        setTimeout(() => {
+            const toast = document.querySelector('.toast-container');
+            if (toast) toast.remove();
+        }, 3000);
+</script>
+</html>

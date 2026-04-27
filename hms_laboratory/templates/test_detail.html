@@ -1,0 +1,42 @@
+{% extends "laboratoryHome.html" %}
+{% block content %}
+
+<style>
+.page-wrapper{width:95%;max-width:900px;margin:30px auto;font-family:Inter,sans-serif;}
+.card{background:#fff;padding:28px;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.06);}
+.row{margin:10px 0;font-size:14px}
+.label{font-weight:700;color:#102a43}
+.btn{background:#2563eb;color:#fff;border:none;padding:9px 18px;border-radius:10px;cursor:pointer;margin-top:12px}
+</style>
+
+<div class="page-wrapper">
+  <div class="card">
+    <h3 style="margin-bottom:18px;font-weight:800;color:#102a43;">Test Detail</h3>
+
+    <div class="row"><span class="label">Patient:</span> {{ test.Appointment.PatientData.Patient_name }}</div>
+    <div class="row"><span class="label">Age:</span> {{ test.Appointment.PatientData.Patient_age }}</div>
+    <div class="row"><span class="label">Doctor:</span> {{ test.Appointment.DoctorData.Doctor_name }}</div>
+    <div class="row"><span class="label">Test Name:</span> {{ test.Test_name }}</div>
+    <div class="row"><span class="label">Notes:</span> {{ test.Notes }}</div>
+    <div class="row"><span class="label">Status:</span> {{ test.Test_status }}</div>
+
+    <hr style="margin:18px 0;border:none;border-top:1px solid #e5e7eb;">
+
+    <h4 style="margin:0 0 10px;color:#102a43;">Upload Report</h4>
+    <form method="POST" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" name="report_image" required>
+      <br>
+      <button class="btn" type="submit">Upload</button>
+    </form>
+
+    {% if test.Report_image %}
+      <div style="margin-top:14px;">
+        <div class="label">Uploaded Report:</div>
+        <img src="{{ test.Report_image.url }}" style="max-width:320px;border-radius:14px;margin-top:10px;">
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

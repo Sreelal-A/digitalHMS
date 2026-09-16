@@ -30,4 +30,4 @@ RUN python manage.py collectstatic --noinput || true
 EXPOSE 8000
 
 # Use gunicorn for production; swap the last arg with your actual wsgi module path
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "3", "digitalHMS.wsgi:application"]
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 3 digitalHMS.wsgi:application"]

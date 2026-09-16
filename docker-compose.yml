@@ -1,0 +1,45 @@
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: digitalhms
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: hms_user
+      MYSQL_PASSWORD: hms_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+    # ports:
+    #   - "3306:3306"
+
+  web:
+    build: .
+    command: gunicorn --bind 0.0.0.0:8000 --workers 3 digitalHMS.wsgi:application
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DEBUG=False
+      - DB_HOST=db
+      - DB_NAME=digitalhms
+      - DB_USER=hms_user
+      - DB_PASSWORD=hms_password
+# to add old data
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8082:80"
+
+volumes:
+  mysql_data:
+  static_volume:

@@ -22,7 +22,7 @@ def admin_login(request):
 
         user = Admin_details.objects.filter(
             Admin_username=username,
-            Admin_password=password  # ⚠️ insecure, see note below
+            Admin_password=password
         ).first()
 
         if user:
